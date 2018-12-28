@@ -118,6 +118,7 @@ def main(args):
 
         sequence_length_pseq = model_inputs_t[-1].shape[1]
         
+    # Create neural regression model.
     mainModel = model.create_regression(pre_embed,
                                         tokenizer_m.word_index,
                                         sequence_length_main,
