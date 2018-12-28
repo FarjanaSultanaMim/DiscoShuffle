@@ -57,7 +57,7 @@ def main(args):
     # Setup data
     pre_embed = data.load_pretrained_embeddings() if args.mp_pretrained else None 
     data.get_normalized_score_and_save('/home/mim/ICLE_essay_Wprompt.xlsx')
-    essayids, essays, scores, prompts = data.load_essay_with_normalized_score("normalized_df.csv")
+    essayids, essays, scores, prompts = data.load_essay_with_normalized_score("data/normalized_df.csv")
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
     if args.mp_di_aware:
