@@ -15,6 +15,8 @@ from nltk import bigrams
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 
+from sklearn.preprocessing import MinMaxScaler
+
 MAX_WORDS = 1000
 MAX_PARAGRAPHS = 20
 
@@ -48,6 +50,57 @@ def load_annotated_essay(fn_essays):
     df = df_ic.parse('Sheet1')
 
     return df["Essay Number"], np.array(df["essay"]), np.array(df["Organization"]), np.array(df["Prompt"])
+
+# Getting normalized score and making a dataframe
+
+def get_normalized_score_and_save(fn_essays):
+    
+    df_ic = pd.ExcelFile(fn_essays)
+    df = df_ic.parse('Sheet1')
+    
+    dff=df
+    dff['n_score']=""
+    
+    scaler1=MinMaxScaler()
+    
+    score1=[]
+    for i in range(dff.index[0],(dff.index[-1]+1)):
+        score1.append(dff.at[i,'Organization'])
+        
+    score1_n=np.asarray(score1) 
+    score1_reshape=score1_n.reshape(-1,1)
+    scaler1.fit(score1_reshape)
+    score1_normalized=scaler1.transform(score1_reshape)
+    score1_normalized=score1_normalized.tolist()
+    
+    score1_normalized_df=[]
+    for i in score1_normalized:
+        for j in i:
+            score1_normalized_df.append(j)
+    dff['n_score']=score1_normalized_df
+    
+    scalerfile = 'scaler.sav'
+    pickle.dump(scaler1, open(scalerfile, 'wb'))
+                        
+    dff.to_csv('normalized_df.csv', encoding='utf-8', index=False)
+    
+# Load data and scaler to rescale the scores
+    
+def load_essay_with_normalized_score(fn):
+    
+    df = pd.read_csv(fn)
+
+    return df["Essay Number"], np.array(df["essay"]), np.array(df["n_score"]), np.array(df["Prompt"])
+
+def load_essay_with_normalized_score_dev(fn):
+    
+    df = pd.read_csv(fn)
+    
+    scalerfile = 'scaler.sav'
+    scaler = pickle.load(open(scalerfile, 'rb'))
+
+    return df["Essay Number"], np.array(df["essay"]), np.array(df["Organization"]), np.array(df["n_score"]), np.array(df["Prompt"]), scaler
+
 
 
 def load_essay(fn_essays):
@@ -181,7 +234,7 @@ def create_training_data_for_di_shuffled_essays(refined_essay, di_list):
     # The original essays work as positive examples (label: 1), while the shuffled essays work as negative examples (label: 0)
     scores = [1] * len(refined_essay) + [0] * len(refined_essay)
     
-    return total_essay, scores
+    return total_essay, scores      
 
 
 def get_persing_sequence(essay, prompt):

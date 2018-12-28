@@ -71,7 +71,7 @@ def main(args):
     keras.backend.set_session(sess)
 
     # Setup data  
-    essayids, essays, scores, prompts = data.load_annotated_essay("/home/mim/ICLE_essay_Wprompt.xlsx")
+    essayids, essays, org_scores, scores, prompts, scaler = data.load_essay_with_normalized_score_dev("normalized_df.csv")
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
     if paramargs.mp_di_aware:
@@ -90,7 +90,7 @@ def main(args):
     _, _, ts = data.get_fold(folds, args.fold)
 
     indices = np.arange(len(essays))
-    main_essay_t, main_essay_v, score_t, score_v, indices_t, indices_v = [], essays[ts], [], scores[ts], [], indices[ts]
+    main_essay_t, main_essay_v, score_t, score_v, indices_t, indices_v = [], essays[ts], [], org_scores[ts], [], indices[ts]
     pseq_t, pseq_v = [], pseqs[indices_v]
     
     # Preparing inputs
@@ -136,9 +136,18 @@ def main(args):
         verbose=1,
         batch_size=32)
     
+    
+    score_model_n = scaler.inverse_transform(score_model)
+    score_model_n = score_model_n.tolist()
+    
+    score_model_nf = []
+    for i in score_model_n:
+        for j in i:
+            score_model_nf.append(j)
+    
     # Save to the file.
     with open(os.path.join(out_dir, "prediction_f{}.json".format(args.fold)), "w") as f:
-        mse, mae = mean_squared_error(score_v, score_model), mean_absolute_error(score_v, score_model)
+        mse, mae = mean_squared_error(score_v, score_model_nf), mean_absolute_error(score_v, score_model_nf)
         
         pr = {
             "system": score_model.tolist(),

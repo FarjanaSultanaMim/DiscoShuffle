@@ -71,8 +71,7 @@ def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, a
         
         # Mean Over Time or pure.
         if args.mp_mot:
-            model = Bidirectional(
-                GRU(args.mp_aggr_grudim, name= 'mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
+            model = Bidirectional(LSTM(args.mp_aggr_grudim, name='mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
             model = MeanOverTime()(model)
 
         else:
@@ -100,7 +99,7 @@ def create_regression(pre_embed, word_index_m, sequence_length_main, sequence_le
         
         model = Concatenate()([model, y])
         
-    model = Dense(1, name="RegressionLayer")(model)
+    model = Dense(1, activation='sigmoid', name="RegressionLayer")(model)
 
     return Model(inputs=x, outputs=[model])
 
