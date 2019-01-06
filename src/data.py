@@ -169,7 +169,7 @@ def shuffled_essay(essay_list):
 
         shuffle_essay.append(nn)
 
-    return np.array(segmented_essay), np.array(shuffle_essay)
+    return segmented_essay, shuffle_essay
 
 
 def di_shuffled_essay(essay_list, di_list):

@@ -2,6 +2,7 @@
 import argparse, logging
 
 import pickle
+import json
 
 import pandas as pd
 import numpy as np
@@ -67,7 +68,7 @@ def main(args):
         test_size=0.2, shuffle=True, random_state=33)
 
     # Create a tokenizer (indexer) from the training dataset.
-    tokenizer_m = model.create_vocab(main_essay_t)
+    tokenizer_m = model.create_vocab_encoder(main_essay_t)
     
     with open(os.path.join(out_dir, "tokenizer.pickle"), "wb") as f:
         pickle.dump(tokenizer_m, f)
@@ -101,7 +102,7 @@ def main(args):
                                      verbose=1, mode='auto', baseline=None,
                                      restore_best_weights=True)
 
-    nbl = kr_util.NBatchLogger(out_dir)
+    nbl = kr_util.NBatchLogger(os.path.join(out_dir, "logs.pickle"))
 
     mainModel.fit(X_train_main, score_t_c, validation_data=(X_val_main, score_v_c),
                 epochs=100, verbose=1, callbacks=[es, nbl],

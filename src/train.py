@@ -105,7 +105,7 @@ def main(args):
     sequence_length_pseq = None
     
     if args.mp_pseq:
-        tokenizer_pseq = model.create_vocab(pseq_t, char_level=True)
+        tokenizer_pseq = model.create_vocab_seq(pseq_t, char_level=True)
         
         with open(os.path.join(out_dir, "tokenizer_pseq_f{}.pickle".format(args.fold)), "wb") as f:
             pickle.dump(tokenizer_pseq, f)
@@ -135,10 +135,11 @@ def main(args):
     
     optimizer_main=keras.optimizers.Adam(clipnorm=args.mp_clipnorm)
     mainModel.compile(optimizer=optimizer_main, loss='mse', metrics=['mse'])
-
+    
+    
     es=keras.callbacks.EarlyStopping(monitor='val_loss',
                                       min_delta=0,
-                                      patience=7,
+                                      patience=15,
                                       verbose=0, mode='auto', baseline=None,
                                       restore_best_weights=True)
 

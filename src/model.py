@@ -16,7 +16,8 @@ from keras.preprocessing.text import Tokenizer
 import data
 
 MAX_PARAGRAPHS = data.MAX_PARAGRAPHS
-MAX_VOCAB_WORDS = 45000
+MAX_VOCAB_WORDS = 15000
+MAX_VOCAB_WORDS_enc = 40000
 
 
 def param_str(args):
@@ -64,14 +65,14 @@ def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, a
     
     # Attentional aggregation?
     if args.mp_att:
-        model = GRU(args.mp_aggr_grudim, name='att_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix)(model)
+        model = LSTM(args.mp_aggr_grudim, name='att_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix)(model)
         model = AttentionalSum(model)
         
     else:
         
         # Mean Over Time or pure.
         if args.mp_mot:
-            model = Bidirectional(LSTM(args.mp_aggr_grudim, name='mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
+            model = Bidirectional(GRU(args.mp_aggr_grudim, name='mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
             model = MeanOverTime()(model)
 
         else:
@@ -94,7 +95,7 @@ def create_regression(pre_embed, word_index_m, sequence_length_main, sequence_le
         x_pseq = Input(shape=(sequence_length_pseq,))
         x += [x_pseq]
         
-        y = Embedding(input_dim=5, output_dim=args.mp_pseq_embdim, input_length=sequence_length_pseq, mask_zero=True, name="pseq_embedding_layer")(x_pseq)
+        y = Embedding(input_dim=4, output_dim=args.mp_pseq_embdim, input_length=sequence_length_pseq, mask_zero=True, name="pseq_embedding_layer")(x_pseq)
         y = LSTM(args.mp_pseq_encdim, name="pseq_LSTM_layer", dropout=args.mp_dropout)(y)
         
         model = Concatenate()([model, y])
@@ -117,6 +118,25 @@ def create_enc_for_pretrain(pre_embed, word_index_m, sequence_length_main, args)
 
 def create_vocab(essays, char_level=False):
     tokenizer_m = Tokenizer(num_words=MAX_VOCAB_WORDS, char_level=char_level, lower=True, oov_token='UNK')
+    tokenizer_m.fit_on_texts(essays)
+    word_index_m = tokenizer_m.word_index
+    
+    print('Found %s unique tokens.' % len(word_index_m))    
+    
+    return tokenizer_m
+
+def create_vocab_seq(essays, char_level=False):
+    tokenizer_m = Tokenizer(lower=True, char_level=char_level)
+    tokenizer_m.fit_on_texts(essays)
+    word_index_m = tokenizer_m.word_index
+    
+    print('Found %s unique tokens.' % len(word_index_m))    
+    
+    return tokenizer_m
+
+
+def create_vocab_encoder(essays, char_level=False):
+    tokenizer_m = Tokenizer(num_words=MAX_VOCAB_WORDS_enc, char_level=char_level, lower=True, oov_token='UNK')
     tokenizer_m.fit_on_texts(essays)
     word_index_m = tokenizer_m.word_index
     
