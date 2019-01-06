@@ -1,0 +1,16 @@
+aggr_grudim=None
+att=False
+clipnorm=5.0
+di_aware=False
+dropout=0.5
+emb_dim=50
+emb_fix=True
+enc_fix=False
+encdim=300
+model_type=nea
+mot=False
+preenc=None
+pretrained=True
+pseq=True
+pseq_embdim=16
+pseq_encdim=400

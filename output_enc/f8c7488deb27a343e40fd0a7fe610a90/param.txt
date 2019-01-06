@@ -1,0 +1,12 @@
+aggr_grudim=300
+att=False
+clipnorm=5.0
+dropout=0.7
+emb_dim=50
+emb_fix=False
+enc_fix=False
+encdim=None
+model_type=nea
+mot=True
+pretrained=True
+shuf=sentence
