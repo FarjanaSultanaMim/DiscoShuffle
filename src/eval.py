@@ -71,7 +71,7 @@ def main(args):
     keras.backend.set_session(sess)
 
     # Setup data  
-    essayids, essays, org_scores, scores, prompts, scaler = data.load_essay_with_normalized_score_dev("normalized_df.csv")
+    essayids, essays, org_scores, scores, prompts, scaler = data.load_essay_with_normalized_score_dev("data/normalized_df.csv")
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
     if paramargs.mp_di_aware:
