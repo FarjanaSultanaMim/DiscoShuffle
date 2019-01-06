@@ -101,7 +101,7 @@ def main(args):
                                      verbose=1, mode='auto', baseline=None,
                                      restore_best_weights=True)
 
-    nbl = kr_util.NBatchLogger(out_dir)
+    nbl = kr_util.NBatchLogger(os.path.join(out_dir, "logs.pickle"))
 
     mainModel.fit(X_train_main, score_t_c, validation_data=(X_val_main, score_v_c),
                 epochs=100, verbose=1, callbacks=[es, nbl],
