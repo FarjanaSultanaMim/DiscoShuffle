@@ -1,1 +1,0 @@
-{"fold": 1, "mp_model_type": "nea", "mp_dropout": 0.6, "mp_pretrained": true, "mp_emb_fix": true, "mp_enc_fix": false, "mp_emb_dim": 50, "mp_aggr_grudim": 300, "mp_encdim": null, "mp_mot": true, "mp_att": false, "mp_clipnorm": 0.0, "mp_preenc": null, "mp_di_aware": false, "mp_pseq": false, "mp_pseq_embdim": null, "mp_pseq_encdim": null}
