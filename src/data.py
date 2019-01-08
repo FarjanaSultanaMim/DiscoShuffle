@@ -17,7 +17,8 @@ from nltk.corpus import stopwords
 from sklearn.preprocessing import MinMaxScaler
 
 MAX_WORDS = 1000
-MAX_PARAGRAPHS = 20
+MAX_PARAGRAPHS = 52
+
 
 
 def load_folds(fn = "/home/naoya-i/work/essay_scoring/data/persing10_5folds.txt", id2idx = {}):
@@ -191,7 +192,7 @@ def di_shuffled_essay(essay_list, di_list):
         segmented_essay.append(s)
         shuffle_essay.append(i_di_shuf)
 
-    return np.array(segmented_essay), np.array(shuffle_essay)
+    return segmented_essay, shuffle_essay
 
 
 def find_replace_di(essay, di_list):

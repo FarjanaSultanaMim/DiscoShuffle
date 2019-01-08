@@ -8,7 +8,6 @@ import random
 import pandas as pd
 import numpy as np
 
-# import nltk
 from nltk import word_tokenize
 from nltk import sent_tokenize
 from nltk import bigrams
@@ -18,7 +17,8 @@ from nltk.corpus import stopwords
 from sklearn.preprocessing import MinMaxScaler
 
 MAX_WORDS = 1000
-MAX_PARAGRAPHS = 20
+MAX_PARAGRAPHS = 52
+
 
 
 def load_folds(fn = "/home/naoya-i/work/essay_scoring/data/persing10_5folds.txt", id2idx = {}):
@@ -51,9 +51,11 @@ def load_annotated_essay(fn_essays):
 
     return df["Essay Number"], np.array(df["essay"]), np.array(df["Organization"]), np.array(df["Prompt"])
 
-# Getting normalized score and making a dataframe
 
-def get_normalized_score_and_save(fn_essays):
+def get_normalized_score_and_save(fn_essays, dir_data = "./data"):
+    """
+    Getting normalized score and making a dataframe
+    """
     
     df_ic = pd.ExcelFile(fn_essays)
     df = df_ic.parse('Sheet1')
@@ -79,28 +81,30 @@ def get_normalized_score_and_save(fn_essays):
             score1_normalized_df.append(j)
     dff['n_score']=score1_normalized_df
     
-    scalerfile = 'scaler.sav'
+    scalerfile = os.path.join(dir_data, 'scaler.sav')
     pickle.dump(scaler1, open(scalerfile, 'wb'))
                         
-    dff.to_csv('normalized_df.csv', encoding='utf-8', index=False)
+    dff.to_csv(os.path.join(dir_data, 'normalized_df.csv'), encoding='utf-8', index=False)
     
-# Load data and scaler to rescale the scores
-    
+
 def load_essay_with_normalized_score(fn):
+    """
+    Load data and scaler to rescale the scores
+    """
     
     df = pd.read_csv(fn)
 
     return df["Essay Number"], np.array(df["essay"]), np.array(df["n_score"]), np.array(df["Prompt"])
 
-def load_essay_with_normalized_score_dev(fn):
+
+def load_essay_with_normalized_score_dev(fn, dir_data = "./data/"):
     
     df = pd.read_csv(fn)
     
-    scalerfile = 'scaler.sav'
+    scalerfile = os.path.join(dir_data, 'scaler.sav')
     scaler = pickle.load(open(scalerfile, 'rb'))
 
     return df["Essay Number"], np.array(df["essay"]), np.array(df["Organization"]), np.array(df["n_score"]), np.array(df["Prompt"]), scaler
-
 
 
 def load_essay(fn_essays):
@@ -188,8 +192,7 @@ def di_shuffled_essay(essay_list, di_list):
         segmented_essay.append(s)
         shuffle_essay.append(i_di_shuf)
 
-    return np.array(segmented_essay), np.array(shuffle_essay)
-
+    return segmented_essay, shuffle_essay
 
 
 def find_replace_di(essay, di_list):

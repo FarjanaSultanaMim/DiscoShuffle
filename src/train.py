@@ -142,6 +142,13 @@ def main(args):
                                       patience=15,
                                       verbose=0, mode='auto', baseline=None,
                                       restore_best_weights=True)
+     
+    if args.mp_model_type == "nea_aft_pretrain":
+        es=keras.callbacks.EarlyStopping(monitor='val_loss',
+                                          min_delta=0,
+                                          patience=30,
+                                          verbose=0, mode='auto', baseline=None,
+                                          restore_best_weights=True)
 
     nbl = kr_util.NBatchLogger(os.path.join(out_dir, "logs_f{}.pickle".format(args.fold)))
 
@@ -166,7 +173,7 @@ if __name__ == "__main__":
     # Model parameters.
     parser.add_argument(
         '-m','--model-type', dest='mp_model_type', type=str, required=True,
-        help="Type of model (nea, rnn1, rnn2).")
+        help="Type of model (nea, rnn1, rnn2, nea_aft_pretrain).")
     parser.add_argument(
         '-d','--dropout', dest='mp_dropout', type=float, required=True,
         help="Dropout ratio.") 

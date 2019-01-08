@@ -98,7 +98,7 @@ def main(args):
 
     es=keras.callbacks.EarlyStopping(monitor='val_loss',
                                      min_delta=0,
-                                     patience=7,
+                                     patience=5,
                                      verbose=1, mode='auto', baseline=None,
                                      restore_best_weights=True)
 
