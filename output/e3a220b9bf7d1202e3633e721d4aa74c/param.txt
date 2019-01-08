@@ -1,0 +1,16 @@
+aggr_grudim=300
+att=False
+clipnorm=0.0
+di_aware=False
+dropout=0.5
+emb_dim=50
+emb_fix=True
+enc_fix=True
+encdim=None
+model_type=nea_aft_pretrain
+mot=True
+preenc=output_enc/sent_best_loss
+pretrained=False
+pseq=True
+pseq_embdim=16
+pseq_encdim=400
