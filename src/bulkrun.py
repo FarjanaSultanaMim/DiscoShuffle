@@ -29,7 +29,7 @@ python src/eval.py \
 # TN16+PN10+pretrain(sent. shuffle, fixed)
 python src/eval.py \
     --fold {} \
-    --model-dir output/3549d721dc569f3840c6e0435a39446b
+    --model-dir output/fa37bf66f2563eec16382c1eac16a108
 """,
 """
 # TN16+PN10+pretrain(sent. shuffle, not fixed)
@@ -62,7 +62,7 @@ python src/train.py \
 # TN16+PN10+pretrain(di. shuffle, fixed)
 python src/train.py \
     --fold {} \
-    --model-type nea --dropout 0.7 \
+    --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 100 \
     --gradientclipnorm 5 --meanovertime \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 64 \
@@ -73,7 +73,7 @@ python src/train.py \
 # TN16+PN10+pretrain(di. shuffle, not fixed)
 python src/train.py \
     --fold {} \
-    --model-type nea --dropout 0.7 \
+    --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 100 \
     --gradientclipnorm 5 --meanovertime \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 64 \
@@ -83,33 +83,44 @@ python src/train.py \
 # TN16+PN10+pretrain(sent. shuffle, fixed)
 python src/train.py \
     --fold {} \
-    --model-type nea --dropout 0.7 \
+    --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 100 \
     --gradientclipnorm 5 --meanovertime \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 64 \
     --fix-encoder --fix-embedding \
-    --pretrained-encoder output_enc/clipnorm=5.0_dropout=0.7_emb_dim=50_emb_fix=False_enc_fix=False_model_type=nea_mot=True_pretrained=False_shuf=sentence
+    --pretrained-encoder output_enc/750570aed2d16633ecbe4237d2d95b71
 """,
 """
 # TN16+PN10+pretrain(sent. shuffle, not fixed)
 python src/train.py \
     --fold {} \
-    --model-type nea --dropout 0.7 \
+    --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 100 \
     --gradientclipnorm 5 --meanovertime \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 64 \
-    --pretrained-encoder output_enc/clipnorm=5.0_dropout=0.7_emb_dim=50_emb_fix=False_enc_fix=False_model_type=nea_mot=True_pretrained=False_shuf=sentence
+    --pretrained-encoder output_enc/750570aed2d16633ecbe4237d2d95b71
 """
 ]
 
-f = int(sys.argv[1])
-
 if sys.argv[2] == "train":
-    comm = comm_train
+    f = int(sys.argv[1])
+    comm = [x.format(f) for x in comm_train]
     
 elif sys.argv[2] == "eval":
-    comm = comm_eval
+    f = int(sys.argv[1])
+    comm = [x.format(f) for x in comm_eval]
     
+elif sys.argv[2] == "train_allfolds":
+    f = int(sys.argv[1])
+    comm = [comm_train[f].format(i) for i in range(0, 5)]
+
+elif sys.argv[2] == "eval_allfolds":
+    f = int(sys.argv[1])
+    comm = [comm_eval[f].format(i) for i in range(0, 5)]
+        
 for c in comm:
-    os.system(c.format(f))
+    print("===")
+    print("bulkrun.py:", c)
+    
+    os.system(c)
     

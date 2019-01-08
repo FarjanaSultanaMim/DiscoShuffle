@@ -146,7 +146,7 @@ def main(args):
     if args.mp_model_type == "nea_aft_pretrain":
         es=keras.callbacks.EarlyStopping(monitor='val_loss',
                                           min_delta=0,
-                                          patience=30,
+                                          patience=15,
                                           verbose=0, mode='auto', baseline=None,
                                           restore_best_weights=True)
 
