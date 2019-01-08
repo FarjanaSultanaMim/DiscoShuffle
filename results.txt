@@ -2,7 +2,11 @@ BEST:
 
 Earlystopping = 15, Bidirectional_GRU
 
+<<<<<<< HEAD
 ############################################## TN16
+=======
+############################################# TN16
+>>>>>>> 82a99c37c51ec548227ff690fa6aeacb9e267fe3
 CUDA_VISIBLE_DEVICES=0 python src/train.py \
     --fold 1 \
     --model-type nea --dropout 0.7 \
@@ -16,7 +20,11 @@ fold_2: MSE: 0.43354450692478946, MAE: 0.43820441302968494
 fold_3: MSE: 0.31550909529180166, MAE: 0.43711961561174534
 fold_4: MSE: 0.38192183534304036, MAE: 0.4812223768234253
 
+<<<<<<< HEAD
 ******** MSE:0.3637198, MAE: 0.4396265
+=======
+****** MSE:0.3637198, MAE: 0.4396265
+>>>>>>> 82a99c37c51ec548227ff690fa6aeacb9e267fe3
 
 CUDA_VISIBLE_DEVICES=0 python src/train.py \
     --fold 1 \
@@ -31,8 +39,13 @@ fold_2: MSE: 0.40797221091868885, MAE: 0.4221186768356247
 fold_3: MSE: 0.31177358090172874, MAE: 0.42847541078406187
 fold_4: MSE: 0.3472692411345298, MAE: 0.43102340459823607
 
+<<<<<<< HEAD
 ******** MSE: 0.3505844, MAE: 0.4278229
+=======
+****** MSE: 0.3505844, MAE: 0.4278229
+>>>>>>> 82a99c37c51ec548227ff690fa6aeacb9e267fe3
 
+############################################################ TN16+PN10
 
 ############################################################ TN16+PN10
 
@@ -44,7 +57,7 @@ fold_2: MSE: 0.21197400929878285, MAE: 0.3720405943951203
 fold_3: MSE: 0.21299012946995527, MAE: 0.3614097293929674
 fold_4: MSE: 0.2142416032639801, MAE: 0.3638330030441284
 
-MSE: 0.2018525, MAE: 0.3599010
+******* MSE: 0.2018525, MAE: 0.3599010
 
 CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 1     --model-type nea --dropout 0.5     --embedding-dim 50 --aggregation-grudim 300     --gradientclipnorm 0 --meanovertime     --pre-trained --fix-embedding     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 
