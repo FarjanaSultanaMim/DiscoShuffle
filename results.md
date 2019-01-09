@@ -114,14 +114,56 @@ CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 0     --model-type nea --d
 
 ### TN16+PN10+pretrain (di. shuffle, no fine-tuning)
 
-- MSEs: 
-- MSE:
+- Dir: 46f970b1c6379f85b7ccc1fe68a8af14
+
+```
+aggr_grudim=300
+att=False
+clipnorm=5.0
+di_aware=False
+dropout=0.7
+emb_dim=50
+emb_fix=True
+enc_fix=True
+encdim=None
+model_type=nea_aft_pretrain
+mot=True
+preenc=output_enc/9780456c95e7c048e2501106fd40c716
+pretrained=False
+pseq=True
+pseq_embdim=16
+pseq_encdim=400
+```
+
+- MSEs: 0.17270962312103763, 0.2207709531401928, 0.18877799411561982, 0.21240548011506646, 0.22274311408665057
+- MSE: 0.20348143291571344, STDEV: 0.019558496261868393
 
 
 ### TN16+PN10+pretrain (di. shuffle, with fine-tuning)
 
-- MSEs: 
-- MSE: 
+- Dir: 0aa2570ced889c4e88ae1554253cb412
+
+```
+aggr_grudim=300
+att=False
+clipnorm=5.0
+di_aware=False
+dropout=0.7
+emb_dim=50
+emb_fix=False
+enc_fix=False
+encdim=None
+model_type=nea_aft_pretrain
+mot=True
+preenc=output_enc/9780456c95e7c048e2501106fd40c716
+pretrained=False
+pseq=True
+pseq_embdim=16
+pseq_encdim=400
+```
+
+- MSEs: 0.18851345297596922, 0.16698824099978538, 0.1784539630179947, 0.22683654581530616, 0.2222658611700897
+- MSE: 0.19661161279582903, STDEV: 0.023851673443049014
 
 
 ## With sentence shuffling
@@ -148,6 +190,7 @@ shuf=sentence
 
 ### TN16+PN10+pretrain (sent. shuffle, no fine-tuning)
 
+- Dir: 752aa6160e706a6ffe0f91a1e423b40a
 ```
 aggr_grudim=300
 att=False
@@ -172,6 +215,8 @@ pseq_encdim=400
 
 
 ### TN16+PN10+pretrain (sent. shuffle, with fine-tuning)
+
+- Dir: 0cb7a2429b6cc73297413c20570c824f
 
 ```
 aggr_grudim=300
