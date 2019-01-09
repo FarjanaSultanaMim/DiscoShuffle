@@ -37,6 +37,30 @@ python src/eval.py \
     --fold {} \
     --model-dir output/0cb7a2429b6cc73297413c20570c824f
 """,
+"""
+# TN16+PN10+pretrain(sent. shuffle, fixed, no pseq)
+python src/eval.py \
+    --fold {} \
+    --model-dir output/f8a2a3674079b877485038b9f59818ff
+""",
+"""
+# TN16+PN10+pretrain(sent. shuffle, not fixed, no pseq)
+python src/eval.py \
+    --fold {} \
+    --model-dir output/a2fe2d615652d3170309fc000cd559be
+""",             
+"""
+# TN16+PN10+pretrain(di. shuffle, fixed, no pseq)
+python src/eval.py \
+    --fold {} \
+    --model-dir output/9ae037a97e5283d4651b77444b97dd42
+""",
+"""
+# TN16+PN10+pretrain(di. shuffle, not fixed, no pseq)
+python src/eval.py \
+    --fold {} \
+    --model-dir output/b65364664e64110a43ca71623a066182
+""",             
 ]
 
 comm_train = ["""
@@ -99,6 +123,44 @@ python src/train.py \
     --gradientclipnorm 5 --meanovertime \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400 \
     --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
+""",
+"""
+# TN16+PN10+pretrain(sent. shuffle, fixed, no pseq)
+python src/train.py \
+    --fold {} \
+    --model-type nea_aft_pretrain --dropout 0.7 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 5 --meanovertime \
+    --fix-encoder --fix-embedding \
+    --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
+""",
+"""
+# TN16+PN10+pretrain(sent. shuffle, not fixed, no pseq)
+python src/train.py \
+    --fold {} \
+    --model-type nea_aft_pretrain --dropout 0.7 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 5 --meanovertime \
+    --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
+""",
+"""
+# TN16+PN10+pretrain(di. shuffle, fixed, no pseq)
+python src/train.py \
+    --fold {} \
+    --model-type nea_aft_pretrain --dropout 0.7 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 5 --meanovertime \
+    --fix-encoder --fix-embedding \
+    --pretrained-encoder output_enc/9780456c95e7c048e2501106fd40c716
+""",
+"""
+# TN16+PN10+pretrain(di. shuffle, not fixed, no pseq)
+python src/train.py \
+    --fold {} \
+    --model-type nea_aft_pretrain --dropout 0.7 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 5 --meanovertime \
+    --pretrained-encoder output_enc/9780456c95e7c048e2501106fd40c716
 """,
 ]
 
