@@ -49,6 +49,9 @@ class param_t:
             
         self.__dict__ = dict(ntp)
         
+        if "mp_score_type" not in self.__dict__:
+            self.__dict__["mp_score_type"] = "Organization" # Defaults to org.
+        
         for k, v in ntp:
             self.__setattr__(k, v)
 
@@ -60,6 +63,7 @@ def main(args):
     
     print("")
     print("Regression evaluator")
+    print("  # Score type: {}".format(paramargs.mp_score_type))
     print("  # Output dir: {}".format(out_dir))
     print("  # Param string:\n{}".format(model.param_str(paramargs)))
     print("")
@@ -71,7 +75,7 @@ def main(args):
     keras.backend.set_session(sess)
 
     # Setup data  
-    essayids, essays, org_scores, scores, prompts, scaler = data.load_essay_with_normalized_score_dev("data/normalized_df.csv")
+    essayids, essays, org_scores, scores, prompts, scaler = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_essay_Wprompt.xlsx', score_source="data/{}Scores.txt".format(paramargs.mp_score_type))
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
     if paramargs.mp_di_aware:
@@ -83,7 +87,7 @@ def main(args):
     
     # Get training and validation set!
     id2idx = dict([(v, k) for k, v in enumerate(essayids)])
-    folds = data.load_folds(id2idx=id2idx)
+    folds = data.load_folds("data/{}Folds.txt".format(paramargs.mp_score_type), id2idx=id2idx)
     
     assert(0 <= args.fold and args.fold <= 4)
     

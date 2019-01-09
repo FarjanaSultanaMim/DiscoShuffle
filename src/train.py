@@ -44,6 +44,7 @@ def main(args):
         
     print("")
     print("Regression trainer")
+    print("  # Score type: {}".format(args.mp_score_type))
     print("  # Output dir: {}".format(out_dir))
     print("  # Param string:\n{}".format(pstr))
     print("")
@@ -56,8 +57,7 @@ def main(args):
 
     # Setup data
     pre_embed = data.load_pretrained_embeddings() if args.mp_pretrained else None 
-    data.get_normalized_score_and_save('/home/mim/ICLE_essay_Wprompt.xlsx')
-    essayids, essays, scores, prompts = data.load_essay_with_normalized_score("data/normalized_df.csv")
+    essayids, essays, _, scores, prompts, _ = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_essay_Wprompt.xlsx', score_source="data/{}Scores.txt".format(args.mp_score_type))
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
     if args.mp_di_aware:
@@ -69,7 +69,7 @@ def main(args):
     
     # Get training and validation set!
     id2idx = dict([(v, k) for k, v in enumerate(essayids)])
-    folds = data.load_folds(id2idx=id2idx)
+    folds = data.load_folds("data/{}Folds.txt".format(args.mp_score_type), id2idx=id2idx)
     
     assert(0 <= args.fold and args.fold <= 4)
     
@@ -169,6 +169,9 @@ if __name__ == "__main__":
     parser.add_argument(
         '-fo','--fold', dest='fold', type=int, required=True,
         help="Fold ID ([1, 5]).")
+    parser.add_argument(
+        '-sct','--score-type', dest='mp_score_type', default="Organization",
+        help="Type of score (Organization, ArgumentStrength, ThesisClarity, PromptAdherence).")
     
     # Model parameters.
     parser.add_argument(

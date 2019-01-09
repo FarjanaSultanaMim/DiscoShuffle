@@ -21,7 +21,7 @@ MAX_PARAGRAPHS = 52
 
 
 
-def load_folds(fn = "/home/naoya-i/work/essay_scoring/data/persing10_5folds.txt", id2idx = {}):
+def load_folds(fn = "data/OrganizationFolds.txt", id2idx = {}):
     
     return [[id2idx.get(x, x) for x in v.strip().split('\n')] for f, v in re.findall("^Fold ([1-5]):\n([A-Z0-9\n]+)$", open(fn).read(), flags=re.DOTALL|re.MULTILINE)]
 
@@ -52,7 +52,7 @@ def load_annotated_essay(fn_essays):
     return df["Essay Number"], np.array(df["essay"]), np.array(df["Organization"]), np.array(df["Prompt"])
 
 
-def get_normalized_score_and_save(fn_essays, dir_data = "./data"):
+def load_annotated_essay_with_normalized_score(fn_essays, score_source = "./data/OrganizationScores.woh.txt"):
     """
     Getting normalized score and making a dataframe
     """
@@ -60,51 +60,26 @@ def get_normalized_score_and_save(fn_essays, dir_data = "./data"):
     df_ic = pd.ExcelFile(fn_essays)
     df = df_ic.parse('Sheet1')
     
-    dff=df
-    dff['n_score']=""
+    # Add scores.
+    df_x = pd.read_csv(score_source, delimiter="\t", header=None)
+    df_x.columns = "essay_id score".split()
     
-    scaler1=MinMaxScaler()
-    
-    score1=[]
-    for i in range(dff.index[0],(dff.index[-1]+1)):
-        score1.append(dff.at[i,'Organization'])
+    # Special treatment for organization scores (as it contains mutiple scores)
+    if "OrganizationScores" in score_source:
+        df_x.score = [float(x.split(",")[0]) for x in df_x.score.values]
+
+    def get_score(x):
+        q  = df_x[df_x.essay_id == x["Essay Number"]].score.values
+        return q[0] if len(q) > 0 else None
         
-    score1_n=np.asarray(score1) 
-    score1_reshape=score1_n.reshape(-1,1)
-    scaler1.fit(score1_reshape)
-    score1_normalized=scaler1.transform(score1_reshape)
-    score1_normalized=score1_normalized.tolist()
+    df['score'] = df.apply(get_score, axis=1)
+    df = df[pd.notna(df.score)]
     
-    score1_normalized_df=[]
-    for i in score1_normalized:
-        for j in i:
-            score1_normalized_df.append(j)
-    dff['n_score']=score1_normalized_df
+    sc = MinMaxScaler()
+    sc.fit(df.score.values.reshape((-1, 1)))
+    df['n_score'] = sc.transform(df.score.values.reshape((-1, 1)))
     
-    scalerfile = os.path.join(dir_data, 'scaler.sav')
-    pickle.dump(scaler1, open(scalerfile, 'wb'))
-                        
-    dff.to_csv(os.path.join(dir_data, 'normalized_df.csv'), encoding='utf-8', index=False)
-    
-
-def load_essay_with_normalized_score(fn):
-    """
-    Load data and scaler to rescale the scores
-    """
-    
-    df = pd.read_csv(fn)
-
-    return df["Essay Number"], np.array(df["essay"]), np.array(df["n_score"]), np.array(df["Prompt"])
-
-
-def load_essay_with_normalized_score_dev(fn, dir_data = "./data/"):
-    
-    df = pd.read_csv(fn)
-    
-    scalerfile = os.path.join(dir_data, 'scaler.sav')
-    scaler = pickle.load(open(scalerfile, 'rb'))
-
-    return df["Essay Number"], np.array(df["essay"]), np.array(df["Organization"]), np.array(df["n_score"]), np.array(df["Prompt"]), scaler
+    return df["Essay Number"], np.array(df.essay), np.array(df.score), np.array(df.n_score), np.array(df.Prompt), sc
 
 
 def load_essay(fn_essays):

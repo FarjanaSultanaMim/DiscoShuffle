@@ -40,8 +40,12 @@ def MaxOverTime():
     return Lambda(lambda x: K.max(x, axis=1), name='maxOverTime')
 
 
-def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, args):
-    vocabulary_size_m = min(len(word_index_m) + 1, MAX_VOCAB_WORDS)
+def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, args, for_pretrain=False):
+    if for_pretrain:
+        vocabulary_size_m = min(len(word_index_m) + 1, MAX_VOCAB_WORDS_enc)
+    
+    else:
+        vocabulary_size_m = min(len(word_index_m) + 1, MAX_VOCAB_WORDS)
 
     if args.mp_pretrained and pre_embed != None:
         embedding_matrix_m = np.zeros((vocabulary_size_m, args.mp_emb_dim))
@@ -81,87 +85,6 @@ def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, a
         
     return model
 
-def create_enc_nea_pretrain(model_input, pre_embed, word_index_m, sequence_length_main, args):
-    vocabulary_size_m = min(len(word_index_m) + 1, MAX_VOCAB_WORDS_enc)
-
-    if args.mp_pretrained and pre_embed != None:
-        embedding_matrix_m = np.zeros((vocabulary_size_m, args.mp_emb_dim))
-
-        for word, i in word_index_m.items():
-            if i >= MAX_VOCAB_WORDS_enc:
-                continue
-            try:
-                embedding_vector_m = pre_embed[word]
-                embedding_matrix_m[i-1] = embedding_vector_m
-            except KeyError:
-                embedding_matrix_m[i-1] = np.random.normal(0, np.sqrt(0.25), args.mp_emb_dim)
-
-    model = Embedding(input_dim = vocabulary_size_m, #embedding_matrix_m.shape[0],
-                      output_dim = args.mp_emb_dim, #embedding_matrix_m.shape[1],
-                      input_length = sequence_length_main,
-                      weights=[embedding_matrix_m] if args.mp_pretrained  and pre_embed != None else None,
-                      mask_zero=True,
-                      trainable=not args.mp_emb_fix,
-                      name='embedding_layer')(model_input)
-
-    # Attentional aggregation?
-    if args.mp_att:
-        model = LSTM(args.mp_aggr_grudim, name='att_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix)(model)
-        model = AttentionalSum(model)
-        
-    else:
-        
-        # Mean Over Time or pure.
-        if args.mp_mot:
-            model = Bidirectional(GRU(args.mp_aggr_grudim, name='mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
-            model = MeanOverTime()(model)
-
-        else:
-            model = Bidirectional(
-                LSTM(args.mp_encdim, name= 'LSTM_layer', dropout=args.mp_dropout, trainable=not args.mp_enc_fix))(model)
-        
-    return model
-
-def create_enc_nea_after_pretrain(model_input, pre_embed, word_index_m, sequence_length_main, args):
-    vocabulary_size_m = min(len(word_index_m) + 1, MAX_VOCAB_WORDS_enc)
-
-    if args.mp_pretrained and pre_embed != None:
-        embedding_matrix_m = np.zeros((vocabulary_size_m, args.mp_emb_dim))
-
-        for word, i in word_index_m.items():
-            if i >= MAX_VOCAB_WORDS_enc:
-                continue
-            try:
-                embedding_vector_m = pre_embed[word]
-                embedding_matrix_m[i-1] = embedding_vector_m
-            except KeyError:
-                embedding_matrix_m[i-1] = np.random.normal(0, np.sqrt(0.25), args.mp_emb_dim)
-
-    model = Embedding(input_dim = vocabulary_size_m, #embedding_matrix_m.shape[0],
-                      output_dim = args.mp_emb_dim, #embedding_matrix_m.shape[1],
-                      input_length = sequence_length_main,
-                      weights=[embedding_matrix_m] if args.mp_pretrained  and pre_embed != None else None,
-                      mask_zero=True,
-                      trainable=not args.mp_emb_fix,
-                      name='embedding_layer')(model_input)
-
-    # Attentional aggregation?
-    if args.mp_att:
-        model = LSTM(args.mp_aggr_grudim, name='att_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix)(model)
-        model = AttentionalSum(model)
-        
-    else:
-        
-        # Mean Over Time or pure.
-        if args.mp_mot:
-            model = Bidirectional(GRU(args.mp_aggr_grudim, name='mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
-            model = MeanOverTime()(model)
-
-        else:
-            model = Bidirectional(
-                LSTM(args.mp_encdim, name= 'LSTM_layer', dropout=args.mp_dropout, trainable=not args.mp_enc_fix))(model)
-        
-    return model
 
 def create_regression(pre_embed, word_index_m, sequence_length_main, sequence_length_pseq, args):
     x = []
@@ -173,7 +96,7 @@ def create_regression(pre_embed, word_index_m, sequence_length_main, sequence_le
         model = create_enc_nea(x_essay, pre_embed, word_index_m, sequence_length_main, args)
         
     if args.mp_model_type == "nea_aft_pretrain":
-        model = create_enc_nea_after_pretrain(x_essay, pre_embed, word_index_m, sequence_length_main, args)
+        model = create_enc_nea(x_essay, pre_embed, word_index_m, sequence_length_main, args, for_pretrain=True)
 
     if args.mp_pseq:
         x_pseq = Input(shape=(sequence_length_pseq,))
@@ -193,7 +116,7 @@ def create_enc_for_pretrain(pre_embed, word_index_m, sequence_length_main, args)
     model_input = Input(shape=(sequence_length_main,))
 
     if args.mp_model_type == "nea":
-        model = create_enc_nea_pretrain(model_input, pre_embed, word_index_m, sequence_length_main, args)
+        model = create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, args, for_pretrain=True)
 
     model = Dense(2, activation='softmax', name="CoherenceLayer")(model)
 
