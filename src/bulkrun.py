@@ -17,13 +17,13 @@ python src/eval.py \
 # TN16+PN10+pretrain(di. shuffle, fixed)
 python src/eval.py \
     --fold {} \
-    --model-dir output/e7066f606904451be43dff3562cd06e1
+    --model-dir output/46f970b1c6379f85b7ccc1fe68a8af14
 """,
 """
 # TN16+PN10+pretrain(di. shuffle, not fixed)
 python src/eval.py \
     --fold {} \
-    --model-dir output/057450e4e7e49a11c90f4fdc03e1de01
+    --model-dir output/0aa2570ced889c4e88ae1554253cb412
 """,
 """
 # TN16+PN10+pretrain(sent. shuffle, fixed)
