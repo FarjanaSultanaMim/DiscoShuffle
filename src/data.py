@@ -52,7 +52,7 @@ def load_annotated_essay(fn_essays):
     return df["Essay Number"], np.array(df["essay"]), np.array(df["Organization"]), np.array(df["Prompt"])
 
 
-def load_annotated_essay_with_normalized_score(fn_essays, score_source = "./data/OrganizationScores.woh.txt"):
+def load_annotated_essay_with_normalized_score(fn_essays, score_source = "./data/OrganizationScores.txt"):
     """
     Getting normalized score and making a dataframe
     """

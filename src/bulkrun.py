@@ -1,6 +1,13 @@
 import sys
 import os
 
+comm_eval_homo = """
+# TN16
+python src/eval.py \
+    --fold {} \
+    --model-dir {}
+"""
+             
 comm_eval = ["""
 # TN16
 python src/eval.py \
@@ -67,6 +74,7 @@ comm_train = ["""
 # TN16
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 100 \
     --gradientclipnorm 5 --meanovertime \
@@ -76,6 +84,7 @@ python src/train.py \
 # TN16+PN10
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 100 \
     --gradientclipnorm 5 --meanovertime \
@@ -86,6 +95,7 @@ python src/train.py \
 # TN16+PN10+pretrain(di. shuffle, fixed)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
@@ -97,6 +107,7 @@ python src/train.py \
 # TN16+PN10+pretrain(di. shuffle, not fixed)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
@@ -107,6 +118,7 @@ python src/train.py \
 # TN16+PN10+pretrain(sent. shuffle, fixed)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
@@ -118,6 +130,7 @@ python src/train.py \
 # TN16+PN10+pretrain(sent. shuffle, not fixed)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
@@ -125,9 +138,10 @@ python src/train.py \
     --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
 """,
 """
-# TN16+PN10+pretrain(sent. shuffle, fixed, no pseq)
+# 6: TN16+PN10+pretrain(sent. shuffle, fixed, no pseq)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
@@ -135,18 +149,20 @@ python src/train.py \
     --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
 """,
 """
-# TN16+PN10+pretrain(sent. shuffle, not fixed, no pseq)
+# 7: TN16+PN10+pretrain(sent. shuffle, not fixed, no pseq)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
     --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
 """,
 """
-# TN16+PN10+pretrain(di. shuffle, fixed, no pseq)
+# 8: TN16+PN10+pretrain(di. shuffle, fixed, no pseq)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
@@ -154,9 +170,10 @@ python src/train.py \
     --pretrained-encoder output_enc/9780456c95e7c048e2501106fd40c716
 """,
 """
-# TN16+PN10+pretrain(di. shuffle, not fixed, no pseq)
+# 9: TN16+PN10+pretrain(di. shuffle, not fixed, no pseq)
 python src/train.py \
     --fold {} \
+    --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
@@ -183,33 +200,40 @@ python src/train_enc.py \
 """,
 ]
 
-if sys.argv[2] == "train":
-    f = int(sys.argv[1])
-    comm = [x.format(f) for x in comm_train]
+if sys.argv[1] == "train":
+    sct = sys.argv[2]
+    f = int(sys.argv[3])
+    comm = [x.format(f, sct) for x in comm_train]
     
-elif sys.argv[2] == "eval":
-    f = int(sys.argv[1])
-    comm = [x.format(f) for x in comm_eval]
-    
-elif sys.argv[2] == "train_allfolds":
-    f = int(sys.argv[1])
-    comm = [comm_train[f].format(i) for i in range(0, 5)]
+elif sys.argv[1] == "train_allfolds":
+    sct = sys.argv[2]
+    f = int(sys.argv[3])
+    comm = [comm_train[f].format(i, sct) for i in range(0, 5)]
 
-elif len(sys.argv) == 4 and sys.argv[3] == "train_onefold":
-    f, ff = int(sys.argv[1]), int(sys.argv[2])
+elif len(sys.argv) == 4 and sys.argv[1] == "train_onefold":
+    sct = sys.argv[2]
+    f, ff = int(sys.argv[3]), int(sys.argv[4])
     comm = [comm_train[f].format(ff)]
     
-elif sys.argv[2] == "eval_allfolds":
-    f = int(sys.argv[1])
+elif sys.argv[1] == "eval":
+    f = int(sys.argv[2])
+    comm = [x.format(f) for x in comm_eval]
+    
+elif sys.argv[1] == "eval_allfolds":
+    f = int(sys.argv[2])
     comm = [comm_eval[f].format(i) for i in range(0, 5)]
     
-elif sys.argv[2] == "train_enc":
-    f = int(sys.argv[1])
-    comm = [comm_train_enc[f]]
+elif sys.argv[1] == "eval_allfolds_homo":
+    model_dir = sys.argv[2]
+    comm = [comm_eval_homo.format(i, model_dir) for i in range(0, 5)]
     
-elif len(sys.argv) == 4 and sys.argv[3] == "eval_onefold":
-    f, ff = int(sys.argv[1]), int(sys.argv[2])
+elif len(sys.argv) == 4 and sys.argv[1] == "eval_onefold":
+    f, ff = int(sys.argv[2]), int(sys.argv[3])
     comm = [comm_eval[f].format(ff)]
+    
+elif sys.argv[1] == "train_enc":
+    f = int(sys.argv[2])
+    comm = [comm_train_enc[f]]
     
         
 for c in comm:
