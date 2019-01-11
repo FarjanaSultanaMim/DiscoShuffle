@@ -271,6 +271,10 @@ pseq_encdim=400
 
 ## TN16
 
+- MSEs: 
+- MSE: 
+
+
 ## Document encoder pretraining
 
 ### With DI shuffling
