@@ -76,7 +76,7 @@ python src/train.py \
     --fold {} \
     --score-type {} \
     --model-type nea --dropout 0.7 \
-    --embedding-dim 50 --aggregation-grudim 100 \
+    --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
     --pre-trained --fix-embedding
 """,
@@ -86,10 +86,10 @@ python src/train.py \
     --fold {} \
     --score-type {} \
     --model-type nea --dropout 0.7 \
-    --embedding-dim 50 --aggregation-grudim 100 \
+    --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
     --pre-trained --fix-embedding \
-    --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 64
+    --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 """,
 """
 # TN16+PN10+pretrain(di. shuffle, fixed)
