@@ -2,13 +2,15 @@ BEST:
 
 Earlystopping = 15, Bidirectional_GRU
 
-# Baselines
-## TN16
+# Organization
+
+## Baselines
+### TN16
 
 Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 
 
-### fold_1:
+#### fold_1:
 
 - clipnorm 0, dropout 0.3 = val_loss: 0.0259
 - clipnorm 0, dropout 0.5 = val_loss: 0.0258
@@ -28,7 +30,7 @@ Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 - clipnorm 3, dropout 0.9 = val_loss: 0.0256
 
 
-### fold_3:
+#### fold_3:
 
 - clipnorm 0, dropout 0.7 = val_loss: 0.0493
 - clipnorm 0, dropout 0.9 = val_loss: 0.0505
@@ -40,7 +42,7 @@ Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 - clipnorm 3, dropout 0.9 = val_loss: 0.0541
 
 
-### Final results
+#### Final results
 
 ```
 CUDA_VISIBLE_DEVICES=0 python src/train.py  --fold 0   --model-type nea --dropout 0.7    --embedding-dim 50 --aggregation-grudim 300  --gradientclipnorm 3 --meanovertime   --pre-trained --fix-embedding
@@ -55,12 +57,12 @@ CUDA_VISIBLE_DEVICES=0 python src/train.py  --fold 0   --model-type nea --dropou
 - MSE: 0.352127
 
 
-## TN16+PN10
+### TN16+PN10
 
 Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 
 
-### fold_1:
+#### fold_1:
 
 - clipnorm 0, dropout 0.3 = val_loss: 0.0220
 - clipnorm 0, dropout 0.5 = val_loss: 0.0216
@@ -77,14 +79,14 @@ Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 - clipnorm 3, dropout 0.9 = val_loss: 0.0233
 
 
-### fold_3:
+#### fold_3:
 
 - clipnorm 0, dropout 0.7 = val_loss: 0.0203
 - clipnorm 5, dropout 0.9 = val_loss: 0.0181
 - clipnorm 3, dropout 0.7 = val_loss: 0.0205
 
 
-### Final results
+#### Final results
 
 ```
 CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 0     --model-type nea --dropout 0.9     --embedding-dim 50 --aggregation-grudim 300     --gradientclipnorm 5 --meanovertime     --pre-trained --fix-embedding     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
@@ -99,11 +101,11 @@ CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 0     --model-type nea --d
 - MSE: 0.1953067
 
 
-# Document encoder pretraining
+## Document encoder pretraining
 
-## With DI shuffling
+### With DI shuffling
 
-### Pretraining
+#### Pretraining
 
 ```
 {'aggr_grudim': '300', 'att': 'False', 'clipnorm': '5.0', 'dropout': '0.7', 'emb_dim': '50', 'emb_fix': 'False', 'enc_fix': 'False', 'encdim': 'None', 'model_type': 'nea', 'mot': 'True', 'pretrained': 'False', 'shuf': 'di'}
@@ -112,7 +114,7 @@ CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 0     --model-type nea --d
 - val_acc: 0.879913
 
 
-### TN16+PN10+pretrain (di. shuffle, no fine-tuning)
+#### TN16+PN10+pretrain (di. shuffle, no fine-tuning)
 
 - Dir: 46f970b1c6379f85b7ccc1fe68a8af14
 
@@ -139,13 +141,13 @@ pseq_encdim=400
 - MSE: 0.20348143291571344, STDEV: 0.019558496261868393
 
 
-#### Without PN10
+##### Without PN10
 
 - Dir: 9ae037a97e5283d4651b77444b97dd42
 - MSE: 0.3629515767422088, 0.03559513166108524
 
 
-### TN16+PN10+pretrain (di. shuffle, with fine-tuning)
+#### TN16+PN10+pretrain (di. shuffle, with fine-tuning)
 
 - Dir: 0aa2570ced889c4e88ae1554253cb412
 
@@ -172,15 +174,15 @@ pseq_encdim=400
 - MSE: 0.19661161279582903, STDEV: 0.023851673443049014
 
 
-#### Without PN10
+##### Without PN10
 
 - Dir: b65364664e64110a43ca71623a066182
 - MSE: 0.3654499088033158, 0.032623712329671886
 
 
-## With sentence shuffling
+### With sentence shuffling
 
-### Pretraining
+#### Pretraining
 
 ```
 aggr_grudim=300
@@ -200,7 +202,7 @@ shuf=sentence
 - val_acc: 0.732533
 
 
-### TN16+PN10+pretrain (sent. shuffle, no fine-tuning)
+#### TN16+PN10+pretrain (sent. shuffle, no fine-tuning)
 
 - Dir: 752aa6160e706a6ffe0f91a1e423b40a
 ```
@@ -226,13 +228,13 @@ pseq_encdim=400
 - MSE: (0.1908009575202462, STDEV: 0.022710780694247448)	
 
 
-#### Without PN10
+##### Without PN10
 
 - Dir: f8a2a3674079b877485038b9f59818ff
 - MSE: 0.34423311125480527, 0.017422520525839476
 
 
-### TN16+PN10+pretrain (sent. shuffle, with fine-tuning)
+#### TN16+PN10+pretrain (sent. shuffle, with fine-tuning)
 
 - Dir: 0cb7a2429b6cc73297413c20570c824f
 
@@ -259,7 +261,78 @@ pseq_encdim=400
 - MSE: 0.18652590523411244, STDEV: 0.023254677920348094
 
 
-#### without PN10
+##### without PN10
 
 - Dir: a2fe2d615652d3170309fc000cd559be
 - MSE: 0.34666465929342216, 0.016055677326282502
+
+
+# Argument Strength
+
+## TN16
+
+## Document encoder pretraining
+
+### With DI shuffling
+
+#### Pretraining
+
+```
+{'aggr_grudim': '300', 'att': 'False', 'clipnorm': '5.0', 'dropout': '0.7', 'emb_dim': '50', 'emb_fix': 'False', 'enc_fix': 'False', 'encdim': 'None', 'model_type': 'nea', 'mot': 'True', 'pretrained': 'False', 'shuf': 'di'}
+```
+
+- val_acc: 0.879913
+
+
+#### TN16+pretrain (di. shuffle, no fine-tuning)
+
+- Dir: cee23dc2ed54aed0911230d84151441e
+
+- MSEs: 0.25664800333384447, 0.23941677197983893, 0.2723700790054423, 0.23736549721363503, 0.26929889274507046
+- MSE: 0.2550198488555663, STDEV:0.014578783265718775
+
+
+#### TN16+pretrain (di. shuffle, with fine-tuning)
+
+- Dir: b1809650ecdefed27f07e32a05dc3ade
+
+- MSEs: 0.2592230096534951, 0.23955059426323458, 0.259447455157723, 0.23680760373543905, 0.267192892992712
+- MSE: 0.25244431116052074, STDEV: 0.012027219127379462
+
+
+### With sentence shuffling
+
+#### Pretraining
+
+```
+aggr_grudim=300
+att=False
+clipnorm=5.0
+dropout=0.7
+emb_dim=50
+emb_fix=False
+enc_fix=False
+encdim=None
+model_type=nea
+mot=True
+pretrained=False
+shuf=sentence
+```
+
+- val_acc: 0.732533
+
+
+#### TN16+pretrain (sent. shuffle, no fine-tuning)
+
+- Dir: fcbeada6ec3cb1984984fe3ec9cb664e
+
+- MSEs: 0.2553112997422369, 0.2392242413397571, 0.2528419103068555, 0.2315592930770336, 0.26730756532314587
+- MSE: 0.24924886195780577, STDEV: 0.01256338952106033
+
+
+#### TN16+pretrain (sent. shuffle, with fine-tuning)
+
+- Dir: 51a2e8727c1fe1fa27d190f879ce078d
+
+- MSEs: 0.26496048231386626, 0.23985156913924272, 0.2462020482008063, 0.23528099814833667, 0.26786079507282806
+- MSE: 0.250831178575016, STDEV: 0.013216912233143372
