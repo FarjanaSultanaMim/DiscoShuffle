@@ -220,8 +220,19 @@ pseq_encdim=400
 
 ## TN16
 
-- MSEs: 
-- MSE: 
+```
+python src/train.py \
+    --fold {} \
+    --score-type {} \
+    --model-type nea --dropout 0.25 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 5 --meanovertime \
+    --pre-trained --fix-embedding
+```
+
+- Dir: c223f9171d2065520643cf6d654dc138
+- MSEs: 0.26188567369116356, 0.23913804768089647, 0.2773715832152496, 0.23792502091095286, 0.2588275069897034
+- MSE: 0.2550295664975932, STDEV: 0.014870790959933896
 
 
 ## Document encoder pretraining

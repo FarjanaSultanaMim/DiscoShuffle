@@ -75,9 +75,9 @@ comm_train = ["""
 python src/train.py \
     --fold {} \
     --score-type {} \
-    --model-type nea --dropout 0.5 \
+    --model-type nea --dropout 0.25 \
     --embedding-dim 50 --aggregation-grudim 300 \
-    --gradientclipnorm 10 --meanovertime \
+    --gradientclipnorm 5 --meanovertime \
     --pre-trained --fix-embedding
 """,
 """
@@ -85,9 +85,9 @@ python src/train.py \
 python src/train.py \
     --fold {} \
     --score-type {} \
-    --model-type nea --dropout 0.75 \
+    --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 300 \
-    --gradientclipnorm 10 --meanovertime \
+    --gradientclipnorm 5 --meanovertime \
     --pre-trained --fix-embedding \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 """,
