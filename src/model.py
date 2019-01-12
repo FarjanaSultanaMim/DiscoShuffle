@@ -55,9 +55,9 @@ def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, a
                 continue
             try:
                 embedding_vector_m = pre_embed[word]
-                embedding_matrix_m[i-1] = embedding_vector_m
+                embedding_matrix_m[i] = embedding_vector_m
             except KeyError:
-                embedding_matrix_m[i-1] = np.random.normal(0, np.sqrt(0.25), args.mp_emb_dim)
+                embedding_matrix_m[i] = np.random.normal(0, np.sqrt(0.25), args.mp_emb_dim)
 
     model = Embedding(input_dim = vocabulary_size_m, #embedding_matrix_m.shape[0],
                       output_dim = args.mp_emb_dim, #embedding_matrix_m.shape[1],
@@ -76,7 +76,8 @@ def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, a
         
         # Mean Over Time or pure.
         if args.mp_mot:
-            model = Bidirectional(GRU(args.mp_aggr_grudim, name='mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
+            model = Bidirectional(GRU(
+                args.mp_aggr_grudim, name='mot_GRU_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix))(model)
             model = MeanOverTime()(model)
 
         else:

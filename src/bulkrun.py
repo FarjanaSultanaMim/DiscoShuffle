@@ -75,9 +75,9 @@ comm_train = ["""
 python src/train.py \
     --fold {} \
     --score-type {} \
-    --model-type nea --dropout 0.7 \
+    --model-type nea --dropout 0.5 \
     --embedding-dim 50 --aggregation-grudim 300 \
-    --gradientclipnorm 5 --meanovertime \
+    --gradientclipnorm 10 --meanovertime \
     --pre-trained --fix-embedding
 """,
 """
@@ -85,9 +85,9 @@ python src/train.py \
 python src/train.py \
     --fold {} \
     --score-type {} \
-    --model-type nea --dropout 0.7 \
+    --model-type nea --dropout 0.75 \
     --embedding-dim 50 --aggregation-grudim 300 \
-    --gradientclipnorm 5 --meanovertime \
+    --gradientclipnorm 10 --meanovertime \
     --pre-trained --fix-embedding \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 """,
@@ -138,7 +138,7 @@ python src/train.py \
     --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
 """,
 """
-# 6: TN16+PN10+pretrain(sent. shuffle, fixed, no pseq)
+# 6: TN16+pretrain(sent. shuffle, fixed)
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -149,7 +149,7 @@ python src/train.py \
     --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
 """,
 """
-# 7: TN16+PN10+pretrain(sent. shuffle, not fixed, no pseq)
+# 7: TN16+pretrain(sent. shuffle, not fixed)
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -159,7 +159,7 @@ python src/train.py \
     --pretrained-encoder output_enc/c2c4d855a06224fd1096834eed11920d
 """,
 """
-# 8: TN16+PN10+pretrain(di. shuffle, fixed, no pseq)
+# 8: TN16+pretrain(di. shuffle, fixed)
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -170,7 +170,7 @@ python src/train.py \
     --pretrained-encoder output_enc/9780456c95e7c048e2501106fd40c716
 """,
 """
-# 9: TN16+PN10+pretrain(di. shuffle, not fixed, no pseq)
+# 9: TN16+pretrain(di. shuffle, not fixed)
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -178,6 +178,27 @@ python src/train.py \
     --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
     --pretrained-encoder output_enc/9780456c95e7c048e2501106fd40c716
+""",
+"""
+# 10: TN16 (random encoder)
+python src/train.py \
+    --fold {} \
+    --score-type {} \
+    --model-type nea --dropout 0.7 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 5 --meanovertime \
+    --fix-encoder --fix-embedding
+""",
+"""
+# 11: TN16+PN10 (random encoder)
+python src/train.py \
+    --fold {} \
+    --score-type {} \
+    --model-type nea --dropout 0.7 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 5 --meanovertime \
+    --fix-encoder --fix-embedding \
+    --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 """,
 ]
 
@@ -210,10 +231,23 @@ elif sys.argv[1] == "train_allfolds":
     f = int(sys.argv[3])
     comm = [comm_train[f].format(i, sct) for i in range(0, 5)]
 
-elif len(sys.argv) == 4 and sys.argv[1] == "train_onefold":
+elif sys.argv[1] == "train_onefold_for_hptune":
+    sct = sys.argv[2]
+    f = int(sys.argv[3])
+    ff = int(sys.argv[4])
+    comm = []
+    
+    for dropout in [0.25, 0.5, 0.75]:
+        for gcn in [5, 10]:
+            cmd = comm_train[f]
+            cmd = cmd.replace("--dropout 0.7", "--dropout {}".format(dropout))
+            cmd = cmd.replace("--gradientclipnorm 5", "--gradientclipnorm {}".format(gcn))
+            comm += [cmd.format(ff, sct)]
+    
+elif len(sys.argv) == 5 and sys.argv[1] == "train_onefold":
     sct = sys.argv[2]
     f, ff = int(sys.argv[3]), int(sys.argv[4])
-    comm = [comm_train[f].format(ff)]
+    comm = [comm_train[f].format(ff, sct)]
     
 elif sys.argv[1] == "eval":
     f = int(sys.argv[2])
@@ -230,6 +264,11 @@ elif sys.argv[1] == "eval_allfolds_homo":
 elif len(sys.argv) == 4 and sys.argv[1] == "eval_onefold":
     f, ff = int(sys.argv[2]), int(sys.argv[3])
     comm = [comm_eval[f].format(ff)]
+    
+elif sys.argv[1] == "eval_onefold_homo":
+    model_dir = sys.argv[2]
+    ff = int(sys.argv[3])
+    comm = [comm_eval_homo.format(ff, model_dir)]
     
 elif sys.argv[1] == "train_enc":
     f = int(sys.argv[2])

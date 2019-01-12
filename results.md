@@ -7,98 +7,47 @@ Earlystopping = 15, Bidirectional_GRU
 ## Baselines
 ### TN16
 
-Best hyperparameter based on fold no. 2 and 4 among 5 folds:
-
-
-#### fold_1:
-
-- clipnorm 0, dropout 0.3 = val_loss: 0.0259
-- clipnorm 0, dropout 0.5 = val_loss: 0.0258
-- clipnorm 0, dropout 0.7 = val_loss: 0.0256
-- clipnorm 0, dropout 0.8 = val_loss: 0.0256
-- clipnorm 0, dropout 0.9 = val_loss: 0.0256
-
-- clipnorm 1, dropout 0.7 = val_loss: 0.0257
-- clipnorm 1, dropout 0.5 = val_loss: 0.0257
-
-- clipnorm 5, dropout 0.7 = val_loss: 0.0257
-- clipnorm 5, dropout 0.5 = val_loss: 0.0257
-- clipnorm 5, dropout 0.9 = val_loss: 0.0256
-
-- clipnorm 3, dropout 0.5 = val_loss: 0.0257
-- clipnorm 3, dropout 0.7 = val_loss: 0.0256
-- clipnorm 3, dropout 0.9 = val_loss: 0.0256
-
-
-#### fold_3:
-
-- clipnorm 0, dropout 0.7 = val_loss: 0.0493
-- clipnorm 0, dropout 0.9 = val_loss: 0.0505
-
-- clipnorm 5, dropout 0.9 = val_loss: 0.0493
-- clipnorm 5, dropout 0.7 = val_loss: 0.0493
-
-- clipnorm 3, dropout 0.7 = val_loss: 0.0490
-- clipnorm 3, dropout 0.9 = val_loss: 0.0541
-
+Best hyperparameter based on fold no. 0.
 
 #### Final results
 
+Dir: 5c078fb2691f6e000ef7ccdf0c02a7c8
+
 ```
-CUDA_VISIBLE_DEVICES=0 python src/train.py  --fold 0   --model-type nea --dropout 0.7    --embedding-dim 50 --aggregation-grudim 300  --gradientclipnorm 3 --meanovertime   --pre-trained --fix-embedding
+python src/train.py \
+    --fold {} \
+    --score-type {} \
+    --model-type nea --dropout 0.5 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 10 --meanovertime \
+    --pre-trained --fix-embedding
 ```
 
-- fold_0: MSE: 0.3621767404762582, MAE: 0.43679335951805115
-- fold_1: MSE: 0.3298523836700365, MAE: 0.41286392235637304
-- fold_2: MSE: 0.3931328914678891, MAE: 0.42098302983525976
-- fold_3: MSE: 0.30799082403575084,MAE: 0.42356242943758987
-- fold_4: MSE: 0.36748199519640024,MAE: 0.46359519481658934
-
-- MSE: 0.352127
+- MSEs: 0.3749731966880151, 0.3154149795353907, 0.3813750535541138, 0.30842621931571246, 0.35948690976970027
+- MSE: 0.34793527177258643, STDEV: 0.030335600745584456
 
 
 ### TN16+PN10
 
-Best hyperparameter based on fold no. 2 and 4 among 5 folds:
-
-
-#### fold_1:
-
-- clipnorm 0, dropout 0.3 = val_loss: 0.0220
-- clipnorm 0, dropout 0.5 = val_loss: 0.0216
-- clipnorm 0, dropout 0.7 = val_loss: 0.0212
-- clipnorm 0, dropout 0.9 = val_loss: 0.0255
-
-
-- clipnorm 5, dropout 0.5 = val_loss: 0.0226
-- clipnorm 5, dropout 0.7 = val_loss: 0.0221
-- clipnorm 5, dropout 0.9 = val_loss: 0.0208
-
-- clipnorm 3, dropout 0.5 = val_loss: 0.0229 
-- clipnorm 3, dropout 0.7 = val_loss: 0.0215
-- clipnorm 3, dropout 0.9 = val_loss: 0.0233
-
-
-#### fold_3:
-
-- clipnorm 0, dropout 0.7 = val_loss: 0.0203
-- clipnorm 5, dropout 0.9 = val_loss: 0.0181
-- clipnorm 3, dropout 0.7 = val_loss: 0.0205
-
+Best hyperparameter based on fold no. 0.
 
 #### Final results
 
+Dir: e885c38c446af586e887fb790dd90930
+
 ```
-CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 0     --model-type nea --dropout 0.9     --embedding-dim 50 --aggregation-grudim 300     --gradientclipnorm 5 --meanovertime     --pre-trained --fix-embedding     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
+python src/train.py \
+    --fold {} \
+    --score-type {} \
+    --model-type nea --dropout 0.75 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 10 --meanovertime \
+    --pre-trained --fix-embedding \
+    --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 ```
 
-- fold_0: MSE: 0.18817686358418173, MAE: 0.35129995703697203
-- fold_1: MSE: 0.18391588820501945, MAE: 0.3496616467907654
-- fold_2: MSE: 0.1780143176682396, MAE: 0.35123343906592375
-- fold_3: MSE: 0.20512577761926526, MAE: 0.3599928285352033
-- fold_4: MSE: 0.2213006920121294, MAE: 0.3716801816225052
-
-- MSE: 0.1953067
+- MSEs: 0.1839222235003539, 0.18074305694272838, 0.2015612465336829, 0.21749697897579662, 0.21812192476768963
+- MSE: 0.20036908614405027, STDEV: 0.015909931184509462
 
 
 ## Document encoder pretraining
