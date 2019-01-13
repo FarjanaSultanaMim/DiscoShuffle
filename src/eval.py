@@ -101,20 +101,19 @@ def main(args):
     model_inputs_v = []
     
     # Text to sequence
-    if paramargs.mp_model_type != "only_pseq":
-        tokenizer_m = pickle.load(open(os.path.join(args.model_dir, "tokenizer_f{}.pickle".format(args.fold)), "rb"))
+    tokenizer_m = pickle.load(open(os.path.join(args.model_dir, "tokenizer_f{}.pickle".format(args.fold)), "rb"))
 
-        sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
-        lens = [len(e) for e in sequences_valid_main]
+    sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
+    lens = [len(e) for e in sequences_valid_main]
 
-        model_inputs_v += [pad_sequences(sequences_valid_main, maxlen=min(max(lens), data.MAX_WORDS))]
+    model_inputs_v += [pad_sequences(sequences_valid_main, maxlen=min(max(lens), data.MAX_WORDS))]
 
-        sequence_length_main = model_inputs_v[-1].shape[1]
-
-        # Persing sequence to sequence
-        sequence_length_pseq = None
+    sequence_length_main = model_inputs_v[-1].shape[1]
     
-    if paramargs.mp_pseq or paramargs.mp_model_type == "only_pseq":
+    # Persing sequence to sequence
+    sequence_length_pseq = None
+    
+    if paramargs.mp_pseq:
         tokenizer_pseq = pickle.load(open(os.path.join(args.model_dir, "tokenizer_pseq_f{}.pickle".format(args.fold)), "rb"))
         sequences_valid_pseq = tokenizer_pseq.texts_to_sequences(pseq_v)
         lens = [len(e) for e in sequences_valid_pseq]
@@ -122,21 +121,14 @@ def main(args):
         model_inputs_v += [pad_sequences(sequences_valid_pseq, maxlen=min(max(lens), data.MAX_PARAGRAPHS))]
 
         sequence_length_pseq = model_inputs_v[-1].shape[1]
-    
-    if paramargs.mp_model_type == "only_pseq":
         
-        mainModel = model.pseq_regression(sequence_length_pseq,
-                                        paramargs,)
-        mainModel.summary()
-        
-    else:
-        mainModel = model.create_regression(None,
+    mainModel = model.create_regression(None,
                                         tokenizer_m.word_index,
                                         sequence_length_main,
                                         sequence_length_pseq,
                                         paramargs,
                                         )
-        mainModel.summary()
+    mainModel.summary()
     
     mainModel.load_weights(os.path.join(args.model_dir, "regression_f{}.hdf5".format(args.fold)), by_name=True)
 
