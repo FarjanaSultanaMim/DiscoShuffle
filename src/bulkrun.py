@@ -75,9 +75,9 @@ comm_train = ["""
 python src/train.py \
     --fold {} \
     --score-type {} \
-    --model-type nea --dropout 0.7 \
-    --embedding-dim 50 --aggregation-grudim 100 \
-    --gradientclipnorm 5 --meanovertime \
+    --model-type nea --dropout 0.5 \
+    --embedding-dim 50 --aggregation-grudim 300 \
+    --gradientclipnorm 0 --meanovertime \
     --pre-trained --fix-embedding
 """,
 """
@@ -85,11 +85,11 @@ python src/train.py \
 python src/train.py \
     --fold {} \
     --score-type {} \
-    --model-type nea --dropout 0.7 \
-    --embedding-dim 50 --aggregation-grudim 100 \
+    --model-type nea --dropout 0.9 \
+    --embedding-dim 50 --aggregation-grudim 300 \
     --gradientclipnorm 5 --meanovertime \
     --pre-trained --fix-embedding \
-    --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 64
+    --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 """,
 """
 # TN16+PN10+pretrain(di. shuffle, fixed)
@@ -206,6 +206,11 @@ if sys.argv[1] == "train":
     comm = [x.format(f, sct) for x in comm_train]
     
 elif sys.argv[1] == "train_allfolds":
+    sct = sys.argv[2]
+    f = int(sys.argv[3])
+    comm = [comm_train[f].format(i, sct) for i in range(0, 5)]
+    
+elif sys.argv[1] == "train_allfolds_Wseed":
     sct = sys.argv[2]
     f = int(sys.argv[3])
     comm = [comm_train[f].format(i, sct) for i in range(0, 5)]

@@ -10,7 +10,7 @@ Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 
 ### fold_1:
 
-- clipnorm 0, dropout 0.3 = val_loss: 0.0259
+- clipnorm 0, dropout 0.3 = val_loss: 0.0257
 - clipnorm 0, dropout 0.5 = val_loss: 0.0258
 - clipnorm 0, dropout 0.7 = val_loss: 0.0256
 - clipnorm 0, dropout 0.8 = val_loss: 0.0256
@@ -55,7 +55,7 @@ CUDA_VISIBLE_DEVICES=0 python src/train.py  --fold 0   --model-type nea --dropou
 - MSE: 0.352127
 
 
-## TN16+PN10
+## TN16+PN10: Organization
 
 Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 
@@ -89,14 +89,15 @@ Best hyperparameter based on fold no. 2 and 4 among 5 folds:
 ```
 CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 0     --model-type nea --dropout 0.9     --embedding-dim 50 --aggregation-grudim 300     --gradientclipnorm 5 --meanovertime     --pre-trained --fix-embedding     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
 ```
+dir: f3266eb6be217d61a69d21977169665f
 
-- fold_0: MSE: 0.18817686358418173, MAE: 0.35129995703697203
-- fold_1: MSE: 0.18391588820501945, MAE: 0.3496616467907654
-- fold_2: MSE: 0.1780143176682396, MAE: 0.35123343906592375
-- fold_3: MSE: 0.20512577761926526, MAE: 0.3599928285352033
-- fold_4: MSE: 0.2213006920121294, MAE: 0.3716801816225052
+- fold_0: MSE: 0.18253937013255694, MAE: 0.34780204176902774
+- fold_1: MSE: 0.1700185757241532, MAE: 0.3373449441805408
+- fold_2: MSE: 0.17473423035119662, MAE: 0.3415010995532743
+- fold_3: MSE: 0.21384976284436022, MAE: 0.3624011325598949
+- fold_4: 0.23140004653422813, MAE: 0.3745786982774735
 
-- MSE: 0.1953067
+- MSE: 0.1945084
 
 
 # Document encoder pretraining
@@ -263,3 +264,55 @@ pseq_encdim=400
 
 - Dir: a2fe2d615652d3170309fc000cd559be
 - MSE: 0.34666465929342216, 0.016055677326282502
+
+
+### PN10
+
+fold_0: MSE: 0.1706966015579623, MAE: 0.3322794187068939
+fold_1: MSE: 0.18432975306633015, MAE: 0.33795325969582174
+fold_2: MSE: 0.16311654072939488, MAE: 0.33474165883230333
+fold_3: MSE: 0.2154137200655532, MAE: 0.36318332401674186
+fold_4: MSE: 0.2025787649746826, MAE: 0.36014226675033567
+
+- MSE: 0.1872271
+
+## Argument strength
+
+# TN16
+
+### fold_1:
+
+- clipnorm 0, dropout 0.5 = val_loss: 0.0286
+- clipnorm 0, dropout 0.7 = val_loss: 0.0291
+- clipnorm 0, dropout 0.9 = val_loss: 0.0292
+
+- clipnorm 5, dropout 0.7 = val_loss: 0.0290
+- clipnorm 5, dropout 0.5 = val_loss: 0.0292
+- clipnorm 5, dropout 0.9 = val_loss: 0.0290
+
+- clipnorm 3, dropout 0.5 = val_loss: 0.0289
+- clipnorm 3, dropout 0.7 = val_loss: 0.0292
+- clipnorm 3, dropout 0.9 = val_loss: 0.0291
+
+### fold_3:
+
+- clipnorm 0, dropout 0.5 = val_loss: 0.0240
+- clipnorm 3, dropout 0.5 = val_loss: 0.0245
+- clipnorm 5, dropout 0.7 = val_loss: 0.0243
+- clipnorm 5, dropout 0.9 = val_loss: 0.0243
+
+dir: 2ed64585fdaf6e39bf91918d1a54ca5c
+
+fold_0: MSE: 0.2659966972675082, MAE: 0.41611958146095274
+fold_1: MSE: 0.2378322980040582, MAE: 0.40255620002746584
+fold_2: MSE: 0.25223326058600803, MAE: 0.42349262118339537
+fold_3: MSE: 0.2351862960945587, MAE: 0.4028599011898041
+fold_4: MSE: 0.2622018043749034, MAE: 0.4131241583824158
+
+MSE: 0.25069007
+
+# see results:
+
+## TN16_PN10: Organization
+
+dir: output/f3266eb6be217d61a69d21977169665f

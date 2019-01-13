@@ -83,28 +83,29 @@ def main(args):
     model_inputs_t, model_inputs_v = [], []
     
     # Text to sequence
-    if args.mp_preenc != None:
-        tokenizer_m = pickle.load(open(os.path.join(args.mp_preenc, "tokenizer.pickle"), "rb"))
-        
-    else:
-        tokenizer_m = model.create_vocab(main_essay_t)
-        
-    with open(os.path.join(out_dir, "tokenizer_f{}.pickle".format(args.fold)), "wb") as f:
-        pickle.dump(tokenizer_m, f)
-    
-    sequences_train_main = tokenizer_m.texts_to_sequences(main_essay_t)
-    sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
-    lens = [len(e) for e in sequences_train_main]
+    if args.mp_model_type != "only_pseq":
+        if args.mp_preenc != None:
+            tokenizer_m = pickle.load(open(os.path.join(args.mp_preenc, "tokenizer.pickle"), "rb"))
 
-    model_inputs_t += [pad_sequences(sequences_train_main, maxlen=min(max(lens), data.MAX_WORDS))]
-    model_inputs_v += [pad_sequences(sequences_valid_main, maxlen=model_inputs_t[-1].shape[1])]
+        else:
+            tokenizer_m = model.create_vocab(main_essay_t)
 
-    sequence_length_main = model_inputs_t[-1].shape[1]
+        with open(os.path.join(out_dir, "tokenizer_f{}.pickle".format(args.fold)), "wb") as f:
+            pickle.dump(tokenizer_m, f)
+
+        sequences_train_main = tokenizer_m.texts_to_sequences(main_essay_t)
+        sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
+        lens = [len(e) for e in sequences_train_main]
+
+        model_inputs_t += [pad_sequences(sequences_train_main, maxlen=min(max(lens), data.MAX_WORDS))]
+        model_inputs_v += [pad_sequences(sequences_valid_main, maxlen=model_inputs_t[-1].shape[1])]
+
+        sequence_length_main = model_inputs_t[-1].shape[1]
     
     # Persing sequence to sequence
     sequence_length_pseq = None
     
-    if args.mp_pseq:
+    if args.mp_pseq or args.mp_model_type == "only_pseq":
         tokenizer_pseq = model.create_vocab_seq(pseq_t, char_level=True)
         
         with open(os.path.join(out_dir, "tokenizer_pseq_f{}.pickle".format(args.fold)), "wb") as f:
@@ -120,14 +121,23 @@ def main(args):
         sequence_length_pseq = model_inputs_t[-1].shape[1]
         
     # Create neural regression model.
-    mainModel = model.create_regression(pre_embed,
+    
+    if args.mp_model_type == "only_pseq":
+        
+        mainModel = model.pseq_regression(sequence_length_pseq,
+                                        args,)
+        mainModel.summary()
+        
+    else:
+        mainModel = model.create_regression(pre_embed,
                                         tokenizer_m.word_index,
                                         sequence_length_main,
                                         sequence_length_pseq,
                                         args,
                                         )
-    mainModel.summary()
+        mainModel.summary()
     
+            
     if args.mp_preenc != None:
         mainModel.load_weights(os.path.join(args.mp_preenc, "encoder.hdf5"), by_name=True)
 
@@ -176,7 +186,7 @@ if __name__ == "__main__":
     # Model parameters.
     parser.add_argument(
         '-m','--model-type', dest='mp_model_type', type=str, required=True,
-        help="Type of model (nea, rnn1, rnn2, nea_aft_pretrain).")
+        help="Type of model (nea, rnn1, rnn2, nea_aft_pretrain, only_pseq).")
     parser.add_argument(
         '-d','--dropout', dest='mp_dropout', type=float, required=True,
         help="Dropout ratio.") 
@@ -190,7 +200,7 @@ if __name__ == "__main__":
         '-fe','--fix-encoder', dest='mp_enc_fix', action="store_true",
         help="Whether to fix encoder.")
     parser.add_argument(
-        '-ed','--embedding-dim', dest='mp_emb_dim', type=int, required=True,
+        '-ed','--embedding-dim', dest='mp_emb_dim', type=int, 
         help="Dimension of word embeddings.")
     parser.add_argument(
         '-aggrgru','--aggregation-grudim', dest='mp_aggr_grudim', type=int,
@@ -213,10 +223,17 @@ if __name__ == "__main__":
     parser.add_argument(
         '-di','--di-aware', dest='mp_di_aware', action="store_true",
         help="Discourse indicator aware model.")
+    parser.add_argument(
+        '-s','--seed', dest='mp_seed', type=int, 
+        help="seed number.") 
+    
     
     # Model parameters for essay scoring.
     parser.add_argument(
         '-pseq','--persing-seq', dest='mp_pseq', action="store_true",
+        help="Use PersingNg10 sequence.")
+    parser.add_argument(
+        '-only-pseq','--only-persing-seq', dest='mp_only_pseq', action="store_true",
         help="Use PersingNg10 sequence.")
     parser.add_argument(
         '-pseq-embdim','--pseq-embedding-dim', dest='mp_pseq_embdim', type=int,
@@ -224,6 +241,9 @@ if __name__ == "__main__":
     parser.add_argument(
         '-pseq-encdim','--pseq-encoder-dim', dest='mp_pseq_encdim', type=int,
         help="Dimension of PersingNg10 sequence encoder.")
+    parser.add_argument(
+        '-pseq-conv-encdim','--pseq-conv-encoder-dim', dest='mp_pseq_conv_encdim', type=int,
+        help="Dimension of PersingNg10 CONV sequence encoder.")
     
     args = parser.parse_args()
     main(args)

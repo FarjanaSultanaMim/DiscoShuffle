@@ -106,8 +106,21 @@ def create_regression(pre_embed, word_index_m, sequence_length_main, sequence_le
         y = LSTM(args.mp_pseq_encdim, name="pseq_LSTM_layer", dropout=args.mp_dropout)(y)
         
         model = Concatenate()([model, y])
-        
+      
     model = Dense(1, activation='sigmoid', name="RegressionLayer")(model)
+
+    return Model(inputs=x, outputs=[model])
+
+def pseq_regression(sequence_length_pseq, args):
+    x = []
+
+    x_pseq = Input(shape=(sequence_length_pseq,))
+    x += [x_pseq]
+        
+    y = Embedding(input_dim=4, output_dim=args.mp_pseq_embdim, input_length=sequence_length_pseq, name="pseq_embedding_layer")(x_pseq)
+    y = LSTM(args.mp_pseq_encdim, name="pseq_LSTM_layer", dropout=args.mp_dropout)(y)
+        
+    model = Dense(1, activation='sigmoid', name="RegressionLayer")(y)
 
     return Model(inputs=x, outputs=[model])
 
