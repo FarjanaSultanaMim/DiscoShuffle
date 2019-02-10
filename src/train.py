@@ -64,7 +64,7 @@ def main(args):
     if args.mp_di_aware:
         di_list = data.load_discourse_indicators()
         essays = data.preprocess_essay(essays, di_list, boseos=True)
-        
+    
     else:
         essays = data.preprocess_essay(essays, args, boseos=True)
         

@@ -23,7 +23,7 @@ import data
 MAX_PARAGRAPHS = data.MAX_PARAGRAPHS
 MAX_VOCAB_WORDS = 15000
 MAX_VOCAB_WORDS_enc = 80000
-MAX_PROMPT_WORDS = 5000
+MAX_PROMPT_WORDS = 1000
 batch_size = 32
 
 elmo_model = hub.Module("https://tfhub.dev/google/elmo/2", trainable=True)
@@ -124,32 +124,33 @@ def create_enc_nea_elmo(model_input, args):
         
     return model
 
-def create_enc_prompt(model_input, pre_embed, word_index_p, sequence_length_prompt, args):
+def create_enc_prompt(model_input, word_index_p, sequence_length_prompt, args):
+    
+    pre_embed = data.load_pretrained_embeddings() 
     
     vocabulary_size_p = min(len(word_index_p) + 1, MAX_PROMPT_WORDS)
 
-    if args.mp_pretrained and pre_embed != None:
-        embedding_matrix_p = np.zeros((vocabulary_size_p, args.mp_emb_dim))
+    embedding_matrix_p = np.zeros((vocabulary_size_p, 50))
 
-        for word, i in word_index_p.items():
-            if i >= MAX_PROMPT_WORDS:
-                continue
-            try:
-                embedding_vector_p = pre_embed[word]
-                embedding_matrix_p[i] = embedding_vector_p
-            except KeyError:
-                embedding_matrix_p[i] = np.random.normal(0, np.sqrt(0.25), args.mp_emb_dim)
+    for word, i in word_index_p.items():
+        if i >= MAX_PROMPT_WORDS:
+            continue
+        try:
+            embedding_vector_p = pre_embed[word]
+            embedding_matrix_p[i] = embedding_vector_p
+        except KeyError:
+            embedding_matrix_p[i] = np.random.normal(0, np.sqrt(0.25), 50)
 
     model = Embedding(input_dim = vocabulary_size_p, #embedding_matrix_m.shape[0],
-                      output_dim = args.mp_emb_dim, #embedding_matrix_m.shape[1],
+                      output_dim = 50, #embedding_matrix_m.shape[1],
                       input_length = sequence_length_prompt,
-                      weights=[embedding_matrix_p] if args.mp_pretrained  and pre_embed != None else None,
+                      weights=[embedding_matrix_p], 
                       mask_zero=True,
-                      trainable=not args.mp_emb_fix,
+                      trainable= False,
                       name='prompt_embedding_layer')(model_input)
     
   
-    model = LSTM (args.mp_aggr_grudim, dropout=args.mp_dropout, name='prompt_LSTM_layer', return_sequences=True, trainable=not args.mp_enc_fix)(model)
+    model = LSTM (args.mp_aggr_grudim, dropout=args.mp_dropout, name='prompt_LSTM_layer', return_sequences=True)(model)
     model = MOT()(model)
         
     return model
@@ -207,7 +208,7 @@ def create_regression_wprompt(pre_embed, word_index_m, word_index_p, sequence_le
         x_prompt = Input(shape=(sequence_length_prompt,))
         x += [x_prompt]
         
-        p = create_enc_prompt(x_prompt, pre_embed, word_index_p, sequence_length_prompt, args)
+        p = create_enc_prompt(x_prompt, word_index_p, sequence_length_prompt, args)
         
         model = Concatenate()([model, p])
 
