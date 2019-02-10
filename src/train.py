@@ -13,6 +13,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
+from nltk import word_tokenize
 
 import keras
 from keras.preprocessing.text import Tokenizer
@@ -48,7 +49,8 @@ def main(args):
     print("  # Param string:\n{}".format(pstr))
     print("")
 
-    # To reduce memory consumption    
+    # To reduce memory consumption 
+    
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
@@ -64,7 +66,11 @@ def main(args):
         essays = data.preprocess_essay(essays, di_list, boseos=True)
         
     else:
-        essays = data.preprocess_essay(essays, boseos=True)
+        essays = data.preprocess_essay(essays, args, boseos=True)
+        
+    if args.mp_prompt:
+        
+        prompts = data.preprocess_essay_encoder(prompts, args, boseos=True)
     
     # Get training and validation set!
     id2idx = dict([(v, k) for k, v in enumerate(essayids)])
@@ -75,31 +81,56 @@ def main(args):
     tr, v, ts = data.get_fold(folds, args.fold)
 
     indices = np.arange(len(essays))
-    main_essay_t, main_essay_v, score_t, score_v, indices_t, indices_v = essays[tr], essays[v], scores[tr], scores[v], indices[tr], indices[v]
+    main_essay_t, main_essay_v, score_t, score_v, indices_t, indices_v, prompt_t, prompt_v = essays[tr], essays[v], scores[tr], scores[v], indices[tr], indices[v], prompts[tr], prompts[v]
     pseq_t, pseq_v = pseqs[indices_t], pseqs[indices_v]
+    
+    print(main_essay_v[:2])
+    print(prompt_v[:10])
     
     # Preparing inputs
     model_inputs_t, model_inputs_v = [], []
     
-    # Text to sequence
-    if args.mp_model_type != "only_pseq":
-        if args.mp_preenc != None:
-            tokenizer_m = pickle.load(open(os.path.join(args.mp_preenc, "tokenizer.pickle"), "rb"))
+        
+        
+    if args.mp_elmo == True:
+        
+        seq_len = []
+        
+        for essay in main_essay_t:
+            seq_len.append(len(essay))
+            
+        sequence_length_main = max(seq_len)
+        
 
-        else:
-            tokenizer_m = model.create_vocab(main_essay_t)
+        main_essay_t = np.array (data.get_padded_essay(main_essay_t, sequence_length_main))
+        main_essay_v = np.array(data.get_padded_essay(main_essay_v, sequence_length_main))
+        
+        print(main_essay_v[2])
+        
+        model_inputs_t += [main_essay_t]
+        model_inputs_v += [main_essay_v]
+        
+    else:
+        # Text to sequence
+        if args.mp_model_type != "only_pseq":
+            if args.mp_preenc != None:
+                tokenizer_m = pickle.load(open(os.path.join(args.mp_preenc, "tokenizer.pickle"), "rb"))
 
-        with open(os.path.join(out_dir, "tokenizer_f{}.pickle".format(args.fold)), "wb") as f:
-            pickle.dump(tokenizer_m, f)
+            else:
+                tokenizer_m = model.create_vocab(main_essay_t, args)
 
-        sequences_train_main = tokenizer_m.texts_to_sequences(main_essay_t)
-        sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
-        lens = [len(e) for e in sequences_train_main]
+            with open(os.path.join(out_dir, "tokenizer_f{}.pickle".format(args.fold)), "wb") as f:
+                pickle.dump(tokenizer_m, f)
 
-        model_inputs_t += [pad_sequences(sequences_train_main, maxlen=min(max(lens), data.MAX_WORDS))]
-        model_inputs_v += [pad_sequences(sequences_valid_main, maxlen=model_inputs_t[-1].shape[1])]
+            sequences_train_main = tokenizer_m.texts_to_sequences(main_essay_t)
+            sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
+            lens = [len(e) for e in sequences_train_main]
 
-        sequence_length_main = model_inputs_t[-1].shape[1]
+            model_inputs_t += [pad_sequences(sequences_train_main, maxlen=min(max(lens), data.MAX_WORDS))]
+            model_inputs_v += [pad_sequences(sequences_valid_main, maxlen=model_inputs_t[-1].shape[1])]
+
+            sequence_length_main = model_inputs_t[-1].shape[1]
+    
     
     # Persing sequence to sequence
     sequence_length_pseq = None
@@ -119,6 +150,23 @@ def main(args):
 
         sequence_length_pseq = model_inputs_t[-1].shape[1]
         
+    #prompt
+    if args.mp_prompt:
+        
+        tokenizer_p = model.create_vocab_prompt(prompt_t, args)
+        
+        with open(os.path.join(out_dir, "tokenizer_p_f{}.pickle".format(args.fold)), "wb") as f:
+                pickle.dump(tokenizer_p, f)
+
+        sequences_train_prompt = tokenizer_p.texts_to_sequences(prompt_t)
+        sequences_valid_prompt = tokenizer_p.texts_to_sequences(prompt_v)
+        lens = [len(e) for e in sequences_train_prompt]
+
+        model_inputs_t += [pad_sequences(sequences_train_prompt, maxlen=min(max(lens), data.MAX_WORDS))]
+        model_inputs_v += [pad_sequences(sequences_valid_prompt, maxlen=model_inputs_t[-1].shape[1])]
+
+        sequence_length_prompt = model_inputs_t[-1].shape[1]
+        
     # Create neural regression model.
     
     if args.mp_model_type == "only_pseq":
@@ -128,13 +176,37 @@ def main(args):
         mainModel.summary()
         
     else:
-        mainModel = model.create_regression(pre_embed,
+        
+        if args.mp_elmo == True:
+            
+            mainModel = model.create_regression_elmo(
+                                        sequence_length_main,
+                                        sequence_length_pseq,
+                                        args,
+                                        )
+            mainModel.summary()
+            
+        elif args.mp_prompt:
+            
+            mainModel = model.create_regression_wprompt(pre_embed,
+                                        tokenizer_m.word_index,
+                                        tokenizer_p.word_index,
+                                        sequence_length_main,
+                                        sequence_length_pseq,
+                                        sequence_length_prompt,
+                                        args,
+                                        )
+            mainModel.summary()
+        
+        else:
+            
+            mainModel = model.create_regression(pre_embed,
                                         tokenizer_m.word_index,
                                         sequence_length_main,
                                         sequence_length_pseq,
                                         args,
                                         )
-        mainModel.summary()
+            mainModel.summary()
     
             
     if args.mp_preenc != None:
@@ -190,6 +262,9 @@ if __name__ == "__main__":
         '-d','--dropout', dest='mp_dropout', type=float, required=True,
         help="Dropout ratio.") 
     parser.add_argument(
+        '-embd','--embed_elmo', dest='mp_elmo', action="store_true",
+        help="Whether to use elmo embedding or not")
+    parser.add_argument(
         '-p','--pre-trained', dest='mp_pretrained', action="store_true",
         help="Whether to use pretrained embeddings.")
     parser.add_argument(
@@ -219,6 +294,15 @@ if __name__ == "__main__":
     parser.add_argument(
         '-enc','--pretrained-encoder', dest='mp_preenc', type=str,
         help="Path to pretrained encoder.")
+    parser.add_argument(
+        '-u_lstm','--uni-lstm', dest='mp_ulstm', action="store_true",
+        help="Whether to use Unidirectional LSTM or nor.")
+    parser.add_argument(
+        '-promt','--prompt', dest='mp_prompt', action="store_true",
+        help="Whether to use prompt or not.")
+    parser.add_argument(
+        '-punct','--punctuation', dest='mp_punct', action="store_true",
+        help="Whether to use punctuation or not.")
     parser.add_argument(
         '-di','--di-aware', dest='mp_di_aware', action="store_true",
         help="Discourse indicator aware model.")

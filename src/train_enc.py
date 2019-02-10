@@ -3,6 +3,8 @@ import argparse, logging
 
 import pickle
 import json
+import re
+import codecs
 
 import pandas as pd
 import numpy as np
@@ -53,8 +55,33 @@ def main(args):
     
     # Setup data
     pre_embed = data.load_pretrained_embeddings() if args.mp_pretrained else None
-    essays = data.load_essay('/home/mim/ICLE_all_data.csv')
-    essays = data.preprocess_essay(essays)
+    essay_icle = data.load_essay('/home/mim/ICLE_all_data.csv')
+    
+    with codecs.open("/home/mim/training_set_rel3.tsv", "r", "Shift-JIS", "ignore") as file:
+        df_asap = pd.read_table(file, delimiter="\t")
+    essay_asap=[]
+    for i in range(df_asap.index[0],(df_asap.index[-1]+1)):
+        essay_asap.append(df_asap.at[i,'essay'])
+        
+    file_t="/home/mim/TOEFL11_essay.xlsx"
+    df_t=pd.ExcelFile(file_t)
+    df_t= df_t.parse('Sheet1')
+    essay_t=[]
+    for i in range(df_t.index[0],(df_t.index[-1]+1)):
+        essay_t.append(df_t.at[i,'essay'])
+        
+    file_icn="/home/mim/ICNALE_all_data.xlsx"
+    df_icn=pd.ExcelFile(file_icn)
+    df_icn= df_icn.parse('Sheet1')
+    essay_icn=[]
+    for i in range(df_icn.index[0],(df_icn.index[-1]+1)):
+        essay_icn.append(re.sub('\ufeff', '', df_icn.at[i,'essay']))
+        
+    essays = essay_icle + essay_asap + essay_t + essay_icn  
+    essays = data.preprocess_essay_encoder(essays, args)
+    
+    print("Length of all essays")
+    print(len(essays))
     
     if args.mp_shuf == "sentence":
         main_essay, main_scores = data.create_training_data_for_shuffled_essays(essays)
@@ -66,9 +93,11 @@ def main(args):
     main_essay_t, main_essay_v, score_t, score_v = train_test_split(
         main_essay, main_scores,
         test_size=0.2, shuffle=True, random_state=33)
+    
+    print(main_essay_v[:2])
 
     # Create a tokenizer (indexer) from the training dataset.
-    tokenizer_m = model.create_vocab_encoder(main_essay_t)
+    tokenizer_m = model.create_vocab_encoder(main_essay_t, args)
     
     with open(os.path.join(out_dir, "tokenizer.pickle"), "wb") as f:
         pickle.dump(tokenizer_m, f)
@@ -76,6 +105,8 @@ def main(args):
     sequences_train_main = tokenizer_m.texts_to_sequences(main_essay_t)
     sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
     lens = [len(e) for e in sequences_train_main]
+    
+    print(len(essays))
 
     X_train_main = pad_sequences(sequences_train_main, maxlen=min(max(lens), data.MAX_WORDS))
     X_val_main = pad_sequences(sequences_valid_main, maxlen=X_train_main.shape[1])
@@ -141,11 +172,17 @@ if __name__ == "__main__":
         '-mot','--meanovertime', dest='mp_mot', action="store_true",
         help="Whether to use MOT layer ot nor.")
     parser.add_argument(
+        '-u_lstm','--uni-lstm', dest='mp_ulstm', action="store_true",
+        help="Whether to use Unidirectional LSTM or nor.")
+    parser.add_argument(
         '-att','--attention', dest='mp_att', action="store_true",
         help="Whether to use final attention layer ot nor.")    
     parser.add_argument(
         '-gc','--gradientclipnorm', dest='mp_clipnorm', type=float, required=True,
         help="Gradient clipping norm.") 
+    parser.add_argument(
+        '-punct','--punctuation', dest='mp_punct', action="store_true",
+        help="Whether to use punctuation or not.")
     
     parser.add_argument(
         '-shuf','--shuffle-type', dest='mp_shuf', type=str, required=True,

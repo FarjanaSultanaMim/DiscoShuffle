@@ -87,7 +87,7 @@ def load_essay(fn_essays):
     essay_all = df_all.essay
     essay_all = essay_all.tolist()
     
-    tokenizer = RegexpTokenizer(r'\w+')
+    tokenizer = RegexpTokenizer(r'\w+|\n')
 
     refined_essay = []
 
@@ -114,21 +114,80 @@ def get_fold(folds, i):
     trsz = int(len(folds[pattern[i][0]])*3.5)
     
     return (tr[:trsz], tr[trsz:], ts)
+
+def essay_with_minimum_words(essay_all):
     
+    tokenizer = RegexpTokenizer(r'\w+')
+    refined_essay = []
     
-def preprocess_essay(essay_list, di_list=None, boseos=False):
+    for e in essay_all:
+        if len(tokenizer.tokenize(e)) <= MAX_WORDS:
+            refined_essay.append(e)
+        
+    return refined_essay
+
+def preprocess_essay_encoder(essay_list, args, di_list=None, boseos=False):
     ret = []
     
     for e in essay_list:
         e = re.sub(r'\t', '', e)
         e = re.sub(r'\n', '', e)
         e = e.lower()
+        if args.mp_punct:
+            e = ' '.join(word_tokenize(e))
 
         if di_list != None:
             e = find_replace_di(e, di_list)
         
         if boseos:
             e = ["BOS {} EOS".format(x) for x in sent_tokenize(e)]
+            
+        ret += [e]
+
+    return np.array(ret)
+    
+    
+def preprocess_essay(essay_list, args, di_list=None, boseos=False):
+    ret = []
+    tokenizer = RegexpTokenizer(r'\w+')
+    
+    n=' '+'MMM'+' ' 
+    
+    for e in essay_list:
+        e = re.sub(r'\t', '', e)
+        e = e.lower()
+        
+        if di_list != None:
+            e = find_replace_di(e, di_list)
+            
+        e = re.sub(r'\n', ' MMM ', e)
+        
+        if args.mp_punct:
+            e = ' '.join(word_tokenize(e))
+        
+        e = re.split('MMM',e)[1:-1]
+       
+        
+        essay =[]
+
+        for i in e:
+    
+            nn = (["BOS {} EOS ".format(x) for x in(sent_tokenize(i))])
+            essay.append(nn)
+        
+        all_essay = []
+        
+        for i in essay:
+            i.append('EOP')
+            for n, k in enumerate(i):
+                if not args.mp_punct:
+                    k = ' '.join(tokenizer.tokenize(k))
+                all_essay.append(k)
+
+        e = all_essay
+        
+        if boseos:
+            e = e
             
         ret += [e]
 
@@ -170,16 +229,158 @@ def di_shuffled_essay(essay_list, di_list):
     return segmented_essay, shuffle_essay
 
 
-def find_replace_di(essay, di_list):
+def find_replace_di_i(essay, di_list):
     
     # Query will look like: "because|in order to"
     regex_di = "|".join([" ".join(di) for di in di_list])
     
+    def _rep(m):
+        return r" DI_{} ".format(m.group(2).replace(" ", "_"))
+        
     essay = re.sub(
         "(^| )(" + regex_di + ") ",
-        r" DI_\2 ",
+        _rep,
         essay)
 
+    return essay
+
+def find_replace_di(essay, di_list):
+    for di in di_list:
+        if len(di) == 9:
+            w0 = di[0]
+            w1 = di[1]
+            w2 = di[2]
+            w3 = di[3]
+            w4 = di[4]
+            w5 = di[5]
+            w6 = di[6]
+            w7 = di[7]
+            w8 = di[8]
+            
+            da = 'DI'+'_'+w0+'_'+w1+'_'+w2+'_'+w3+'_'+w4+'_'+w5+'_'+w6+'_'+w7+'_'+w8
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                             (w0, w1, w2, w3, w4, w5, w6, w7, w8), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                                 (w0, w1, w2, w3, w4, w5, w6, w7, w8), da, essay)
+            
+        elif len(di) == 8:
+            w0 = di[0]
+            w1 = di[1]
+            w2 = di[2]
+            w3 = di[3]
+            w4 = di[4]
+            w5 = di[5]
+            w6 = di[6]
+            w7 = di[7]
+            
+            da = 'DI'+'_'+w0+'_'+w1+'_'+w2+'_'+w3+'_'+w4+'_'+w5+'_'+w6+'_'+w7
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                             (w0, w1, w2, w3, w4, w5, w6, w7), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                                 (w0, w1, w2, w3, w4, w5, w6, w7), da, essay) 
+            
+        elif len(di) == 7:
+            w0 = di[0]
+            w1 = di[1]
+            w2 = di[2]
+            w3 = di[3]
+            w4 = di[4]
+            w5 = di[5]
+            w6 = di[6]
+            
+            da = 'DI'+'_'+w0+'_'+w1+'_'+w2+'_'+w3+'_'+w4+'_'+w5+'_'+w6
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                             (w0, w1, w2, w3, w4, w5, w6), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                                 (w0, w1, w2, w3, w4, w5, w6), da, essay)
+            
+        elif len(di) == 6:
+            w0 = di[0]
+            w1 = di[1]
+            w2 = di[2]
+            w3 = di[3]
+            w4 = di[4]
+            w5 = di[5]
+            
+            da = 'DI'+'_'+w0+'_'+w1+'_'+w2+'_'+w3+'_'+w4+'_'+w5
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                             (w0, w1, w2, w3, w4, w5), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                                 (w0, w1, w2, w3, w4, w5), da, essay)
+            
+        elif len(di) == 5:
+            w0 = di[0]
+            w1 = di[1]
+            w2 = di[2]
+            w3 = di[3]
+            w4 = di[4]
+            
+            da = 'DI'+'_'+w0+'_'+w1+'_'+w2+'_'+w3+'_'+w4
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                             (w0, w1, w2, w3, w4), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                                 (w0, w1, w2, w3, w4), da, essay)
+            
+        elif len(di) == 4:
+            w0 = di[0]
+            w1 = di[1]
+            w2 = di[2]
+            w3 = di[3]
+            
+            da = 'DI'+'_'+w0+'_'+w1+'_'+w2+'_'+w3
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                             (w0, w1, w2, w3), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b\s\b%s\b\s\b%s\b'% 
+                                 (w0, w1, w2, w3), da, essay)
+            
+        elif len(di) == 3:
+            w0 = di[0]
+            w1 = di[1]
+            w2 = di[2]
+            
+            da = 'DI'+'_'+w0+'_'+w1+'_'+w2
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b\s\b%s\b'% 
+                             (w0, w1, w2), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b\s\b%s\b'% 
+                                 (w0, w1, w2), da, essay)
+            
+        elif len(di) == 2:
+            w0 = di[0]
+            w1 = di[1]
+            
+            da = 'DI'+'_'+w0+'_'+w1
+            
+            if bool(re.search(r'\b%s\b\s\b%s\b'% 
+                             (w0, w1), essay)) == True:
+
+                essay = re.sub(r'\b%s\b\s\b%s\b'% 
+                                 (w0, w1), da, essay)
+            
+        elif len(di) == 1:
+            w0 = di[0]
+            
+            da = 'DI'+'_'+w0
+            
+            if bool(re.search(r'\b%s\b'% 
+                             (w0), essay)) == True:
+
+                essay = re.sub(r'\b%s\b'% 
+                                 (w0), da, essay)
+                
     return essay
 
 
@@ -212,7 +413,25 @@ def create_training_data_for_di_shuffled_essays(refined_essay, di_list):
     # The original essays work as positive examples (label: 1), while the shuffled essays work as negative examples (label: 0)
     scores = [1] * len(refined_essay) + [0] * len(refined_essay)
     
-    return total_essay, scores      
+    return total_essay, scores 
+
+def get_padded_essay(input_essay, max_seq_len):
+        
+    essay_padded = []
+    for essay in input_essay:
+        
+        new_ess = []
+        
+        for i in range(max_seq_len):
+            try:
+                new_ess.append(essay[i])
+                
+            except:
+                new_ess.append("__PAD__")
+                          
+        essay_padded += [new_ess]
+        
+    return essay_padded
 
 
 def get_persing_sequence(essay, prompt):
