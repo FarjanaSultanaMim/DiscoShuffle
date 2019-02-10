@@ -193,6 +193,15 @@ def create_regression_wprompt(pre_embed, word_index_m, word_index_p, sequence_le
     if args.mp_model_type == "nea_aft_pretrain":
         model = create_enc_nea(x_essay, pre_embed, word_index_m, sequence_length_main, args, for_pretrain=True)
         
+    if args.mp_pseq:
+        x_pseq = Input(shape=(sequence_length_pseq,))
+        x += [x_pseq]
+        
+        y = Embedding(input_dim=4, output_dim=args.mp_pseq_embdim, input_length=sequence_length_pseq, mask_zero=True, name="pseq_embedding_layer")(x_pseq)
+        y = Bidirectional(LSTM(args.mp_pseq_encdim, dropout=args.mp_dropout), name="pseq_LSTM_layer")(y)
+        
+        model = Concatenate()([model, y])
+        
     if args.mp_prompt:
         
         x_prompt = Input(shape=(sequence_length_prompt,))
@@ -202,15 +211,6 @@ def create_regression_wprompt(pre_embed, word_index_m, word_index_p, sequence_le
         
         model = Concatenate()([model, p])
 
-    if args.mp_pseq:
-        x_pseq = Input(shape=(sequence_length_pseq,))
-        x += [x_pseq]
-        
-        y = Embedding(input_dim=4, output_dim=args.mp_pseq_embdim, input_length=sequence_length_pseq, mask_zero=True, name="pseq_embedding_layer")(x_pseq)
-        y = Bidirectional(LSTM(args.mp_pseq_encdim, dropout=args.mp_dropout), name="pseq_LSTM_layer")(y)
-        
-        model = Concatenate()([model, y])
-      
     model = Dense(1, activation='sigmoid', name="RegressionLayer")(model)
 
     return Model(inputs=x, outputs=[model])

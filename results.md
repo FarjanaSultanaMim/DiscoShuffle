@@ -76,6 +76,49 @@ ulstm=False`
 
 ###### Avg: 0.25004909409409254 , STDEV: 0.10071953924309758
 
+
+## NEA (with punctuation & prompt)
+
+dir: output/cd311c50d8f814bb6ab99613922e73b7
+
+`aggr_grudim=300
+att=False
+clipnorm=5.0
+di_aware=False
+dropout=0.7
+elmo=False
+emb_dim=50
+emb_fix=True
+enc_fix=False
+encdim=None
+model_type=nea
+mot=True
+only_pseq=False
+preenc=None
+pretrained=True
+prompt=True
+pseq=False
+pseq_conv_encdim=None
+pseq_embdim=None
+pseq_encdim=None
+punct=True
+score_type=Organization
+seed=None
+ulstm=False`
+
+-
+-
+-
+-
+-
+
+###### 
+
+
+
+
+
+
 ## NEA+PN10 (without punctuation)
 
 dir: output/2eb663e7efb7671f4f1864d696f14f11
@@ -148,6 +191,45 @@ ulstm=False`
 - MSE: 0.17511622015883574, MAE: 0.3290806007385254
 
 ###### Avg: 0.17897313704827966 , STDEV: 0.008617295647602958
+
+
+
+## NEA+PN10 (with punctuation & prompt)
+
+dir: output/c790a61c043dab53a0346392a4159c23
+
+`aggr_grudim=300
+att=False
+clipnorm=5.0
+di_aware=False
+dropout=0.7
+elmo=False
+emb_dim=50
+emb_fix=True
+enc_fix=False
+encdim=None
+model_type=nea
+mot=True
+only_pseq=False
+preenc=None
+pretrained=True
+prompt=True
+pseq=True
+pseq_conv_encdim=None
+pseq_embdim=16
+pseq_encdim=200
+punct=True
+score_type=Organization
+seed=None
+ulstm=False`
+
+-
+-
+-
+-
+-
+
+######
 
 
 # Pretrained encoder 
