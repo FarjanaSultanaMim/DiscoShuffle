@@ -84,6 +84,10 @@ def main(args):
         
     else:
         essays = data.preprocess_essay(essays, paramargs, boseos=True)
+        
+    if paramargs.mp_prompt:
+        
+        prompts = data.preprocess_essay_encoder(prompts, paramargs, boseos=True)
     
     # Get training and validation set!
     id2idx = dict([(v, k) for k, v in enumerate(essayids)])
@@ -94,10 +98,11 @@ def main(args):
     _, _, ts = data.get_fold(folds, args.fold)
 
     indices = np.arange(len(essays))
-    main_essay_t, main_essay_v, score_t, score_v, indices_t, indices_v = [], essays[ts], [], org_scores[ts], [], indices[ts]
+    main_essay_t, main_essay_v, score_t, score_v, indices_t, indices_v, prompt_t, prompt_v = [], essays[ts], [], org_scores[ts], [], indices[ts], [], prompts[ts]
     pseq_t, pseq_v = [], pseqs[indices_v]
     
     print(main_essay_v[:1])
+    print(prompt_v[:1])
     
     # Preparing inputs
     model_inputs_v = []
@@ -126,6 +131,19 @@ def main(args):
         model_inputs_v += [pad_sequences(sequences_valid_pseq, maxlen=min(max(lens), data.MAX_PARAGRAPHS))]
 
         sequence_length_pseq = model_inputs_v[-1].shape[1]
+        
+      #prompt
+    if paramargs.mp_prompt:
+        
+        tokenizer_p = pickle.load(open(os.path.join(args.model_dir, "tokenizer_p_f{}.pickle".format(args.fold)), "rb"))
+        
+        sequences_valid_prompt = tokenizer_p.texts_to_sequences(prompt_v)
+        lens = [len(e) for e in sequences_valid_prompt]
+
+        model_inputs_v += [pad_sequences(sequences_valid_prompt, maxlen=min(max(lens), data.MAX_WORDS))]
+
+        sequence_length_prompt = model_inputs_v[-1].shape[1]
+
     
     if paramargs.mp_model_type == "only_pseq":
         
@@ -134,13 +152,28 @@ def main(args):
         mainModel.summary()    
     
     else:
-        mainModel = model.create_regression(None,
+        
+        if paramargs.mp_prompt:
+            
+            mainModel = model.create_regression_wprompt(None,
+                                        tokenizer_m.word_index,
+                                        tokenizer_p.word_index,
+                                        sequence_length_main,
+                                        sequence_length_pseq,
+                                        sequence_length_prompt,
+                                        paramargs,
+                                        )
+            mainModel.summary()
+        
+        else:
+            
+            mainModel = model.create_regression(None,
                                         tokenizer_m.word_index,
                                         sequence_length_main,
                                         sequence_length_pseq,
                                         paramargs,
                                         )
-        mainModel.summary()
+            mainModel.summary()
     
     mainModel.load_weights(os.path.join(args.model_dir, "regression_f{}.hdf5".format(args.fold)), by_name=True)
 

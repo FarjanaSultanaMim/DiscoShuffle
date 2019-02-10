@@ -106,13 +106,13 @@ score_type=Organization
 seed=None
 ulstm=False`
 
--
--
--
--
--
+- MSE: 0.1834161630576773, MAE: 0.3334080243110657
+- MSE: 0.2344542887788437, MAE: 0.36870682595381093
+- MSE: 0.1874720934144812, MAE: 0.3433224016161107
+- MSE: 0.2166135046898376, MAE: 0.35784506738482424
+- MSE: 0.20066742294185325, MAE: 0.35274820268154145
 
-###### 
+###### Avg: 0.2045246945765386 STDEV: 0.021172858763100256 
 
 
 
@@ -253,8 +253,8 @@ punct=True
 shuf=sentence
 ulstm=False`
 
-- train_acc:
-- val_acc:
+- train_acc: 0.8651
+- val_acc: 0.8232
 
 
 ## Sentence Shuffling (pretrained-embedding)
@@ -276,8 +276,8 @@ punct=True
 shuf=sentence
 ulstm=False`
 
-- train_acc:
-- val_acc: 
+- train_acc: 0.8291
+- val_acc: 0.8143
 
 
 
