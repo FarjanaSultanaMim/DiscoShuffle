@@ -81,7 +81,15 @@ def main(args):
     if paramargs.mp_di_aware:
         di_list = data.load_discourse_indicators()
         essays = data.preprocess_essay(essays, di_list, boseos=True)
+    
+    elif paramargs.mp_model_type == "nea_aft_pretrain" and not paramargs.mp_para:
         
+        essays = data.preprocess_essay_encoder(essays, paramargs, boseos=True)
+        
+    elif paramargs.mp_no_para:
+        
+        essays = data.preprocess_essay_encoder(essays, paramargs, boseos=True)
+    
     else:
         essays = data.preprocess_essay(essays, paramargs, boseos=True)
         

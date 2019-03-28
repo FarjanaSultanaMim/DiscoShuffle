@@ -22,7 +22,7 @@ import data
 
 MAX_PARAGRAPHS = data.MAX_PARAGRAPHS
 MAX_VOCAB_WORDS = 15000
-MAX_VOCAB_WORDS_enc = 80000
+MAX_VOCAB_WORDS_enc = 90000
 MAX_PROMPT_WORDS = 1000
 batch_size = 32
 
@@ -90,12 +90,12 @@ def create_enc_nea(model_input, pre_embed, word_index_m, sequence_length_main, a
         # Mean Over Time or pure.
         if args.mp_mot:
             
-            model = LSTM(args.mp_aggr_grudim, name='mot_LSTM_layer', dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix)(model)
+            model = Bidirectional(LSTM(args.mp_aggr_grudim, dropout=args.mp_dropout, return_sequences=True, trainable=not args.mp_enc_fix),  name= 'MOT_bi-LSTM_layer')(model)
             model = MeanOverTime()(model)
         
         else:
-            model = Bidirectional(
-                LSTM(args.mp_encdim, name= 'LSTM_layer', dropout=args.mp_dropout, trainable=not args.mp_enc_fix))(model)
+            model = LSTM(args.mp_aggr_grudim, name= 'LSTM_layer', dropout=args.mp_dropout, trainable=not args.mp_enc_fix, return_sequences=True)(model)
+            model = MeanOverTime()(model)
         
     return model
 
@@ -146,12 +146,11 @@ def create_enc_prompt(model_input, word_index_p, sequence_length_prompt, args):
                       input_length = sequence_length_prompt,
                       weights=[embedding_matrix_p], 
                       mask_zero=True,
-                      trainable= False,
+                      trainable= True,
                       name='prompt_embedding_layer')(model_input)
     
   
-    model = LSTM (args.mp_aggr_grudim, dropout=args.mp_dropout, name='prompt_LSTM_layer', return_sequences=True)(model)
-    model = MOT()(model)
+    model = LSTM (300, dropout=args.mp_dropout, name='prompt_LSTM_layer')(model)
         
     return model
 

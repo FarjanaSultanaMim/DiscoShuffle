@@ -1,187 +1,472 @@
-BEST:
+No-Para:  ArgumrntStrangth
 
-Earlystopping = 15, Bidirectional_GRU
+ dropout: 0.5 gcn: 0            output/5dee06e167f3b3151eb469fb8d1432ba
+dropout: 0.5 gcn: 3           output/d4f45b1d65feab27ed52a146aeb5219b
+dropout: 0.5 gcn: 5           output/58fa56bd6a7f7f61e77f12f67723adce
+dropout: 0.5 gcn: 7            output/036f16732b77c64d0a7ce6574ef1f7c7
+dropout: 0.7 gcn: 0           output/8d749caf75e1fc438240c1b28012c417
+dropout: 0.7 gcn: 3           output/55c9c35a982fc5dc6403cd5693bf17b1
+dropout: 0.7 gcn: 5           output/fe599504392301ee334dd1c6a0bbf47f
+dropout: 0.7 gcn: 7           output/3233615b06151c1832cd3aa10759d6ba
+dropout: 0.9 gcn: 0           output/207830339f9a506d83bbb58cef003b0a
+dropout: 0.9 gcn: 3           output/d769fae84ab3056cd0122e2cacaac71f
+dropout: 0.9 gcn: 5           output/c70876a85d999ff9b187f7990484931d
+dropout: 0.9 gcn: 7          output/ab277f04044bd7ed119da6492495f482
 
-# Baselines
-## TN16
+No-para : Organization 
 
-Best hyperparameter based on fold no. 2 and 4 among 5 folds:
-
-fold_1:
-
-clipnorm 0, dropout 0.3 = val_loss: 0.0259
-clipnorm 0, dropout 0.5 = val_loss: 0.0258
-clipnorm 0, dropout 0.7 = val_loss: 0.0256
-clipnorm 0, dropout 0.8 = val_loss: 0.0256
-clipnorm 0, dropout 0.9 = val_loss: 0.0256
-
-clipnorm 1, dropout 0.7 = val_loss: 0.0257
-clipnorm 1, dropout 0.5 = val_loss: 0.0257
-
-clipnorm 5, dropout 0.7 = val_loss: 0.0257
-clipnorm 5, dropout 0.5 = val_loss: 0.0257
-clipnorm 5, dropout 0.9 = val_loss: 0.0256
-
-clipnorm 3, dropout 0.5 = val_loss: 0.0257
-clipnorm 3, dropout 0.7 = val_loss: 0.0256
-clipnorm 3, dropout 0.9 = val_loss: 0.0256
-
-fold_3:
-
-clipnorm 0, dropout 0.7 = val_loss: 0.0493
-clipnorm 0, dropout 0.9 = val_loss: 0.0505
-
-clipnorm 5, dropout 0.9 = val_loss: 0.0493
-clipnorm 5, dropout 0.7 = val_loss: 0.0493
-
-clipnorm 3, dropout 0.7 = val_loss: 0.0490
-clipnorm 3, dropout 0.9 = val_loss: 0.0541
-
-```
-CUDA_VISIBLE_DEVICES=0 python src/train.py  --fold 0   --model-type nea --dropout 0.7    --embedding-dim 50 --aggregation-grudim 300  --gradientclipnorm 3 --meanovertime   --pre-trained --fix-embedding
-```
-
-fold_0: MSE: 0.3621767404762582, MAE: 0.43679335951805115
-fold_1: MSE: 0.3298523836700365, MAE: 0.41286392235637304
-fold_2: MSE: 0.3931328914678891, MAE: 0.42098302983525976
-fold_3: MSE: 0.30799082403575084,MAE: 0.42356242943758987
-fold_4: MSE: 0.36748199519640024,MAE: 0.46359519481658934
-
-- MSE: 0.352127
+dropout: 0.5 gcn: 0         output/e377f47ead051c5be1a5d38da288323f  
+dropout: 0.5 gcn: 3         output/1c33652c4be2ec115648417ebfc346c2 
+dropout: 0.5 gcn: 5          output/1f62e56cc520151ad513595ccf6a4e68 
+dropout: 0.5 gcn: 7          output/6e6e40800fee657a371181f3ff4dc0b6 
+dropout: 0.7 gcn: 0           output/835917feb340221233a45afbf7347fa3
+dropout: 0.7 gcn: 3          output/524b0bca8e8b85f816676642e8a2034f 
+dropout: 0.7 gcn: 5           output/2d68c315fa7c6291a53af37dca685f64
+dropout: 0.7 gcn: 7           output/1e8ba9d8503f6f9c80e1be3cb641f676
+dropout: 0.9 gcn: 0           output/33cdea084e556bfc8d3ff4bc5aa6d7a0
+dropout: 0.9 gcn: 3           output/a60af5f2615bb188d43fa0c72bb1cbeb
+dropout: 0.9 gcn: 5         output/80832693c3f979c4c96232fb79752766
+dropout: 0.9 gcn: 7        output/ca2b56375a2320d50d9fcf346d164f96
 
 
-## TN16+PN10
+No-Para:  NEA + PN10 Organization
 
-Best hyperparameter based on fold no. 2 and 4 among 5 folds:
-
-fold_1:
-
-clipnorm 0, dropout 0.3 = val_loss: 0.0220
-clipnorm 0, dropout 0.5 = val_loss: 0.0216
-clipnorm 0, dropout 0.7 = val_loss: 0.0212
-clipnorm 0, dropout 0.9 = val_loss: 0.0255
-
-
-clipnorm 5, dropout 0.5 = val_loss: 0.0226
-clipnorm 5, dropout 0.7 = val_loss: 0.0221
-clipnorm 5, dropout 0.9 = val_loss: 0.0208
-
-clipnorm 3, dropout 0.5 = val_loss: 0.0229 
-clipnorm 3, dropout 0.7 = val_loss: 0.0215
-clipnorm 3, dropout 0.9 = val_loss: 0.0233
-
-fold_3:
-
-clipnorm 0, dropout 0.7 = val_loss: 0.0203
-clipnorm 5, dropout 0.9 = val_loss: 0.0181
-clipnorm 3, dropout 0.7 = val_loss: 0.0205
-
-```
-CUDA_VISIBLE_DEVICES=0 python src/train.py     --fold 0     --model-type nea --dropout 0.9     --embedding-dim 50 --aggregation-grudim 300     --gradientclipnorm 5 --meanovertime     --pre-trained --fix-embedding     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 400
-```
-
-fold_0: MSE: 0.18817686358418173, MAE: 0.35129995703697203
-fold_1: MSE: 0.18391588820501945, MAE: 0.3496616467907654
-fold_2: MSE: 0.1780143176682396, MAE: 0.35123343906592375
-fold_3: MSE: 0.20512577761926526, MAE: 0.3599928285352033
-fold_4: MSE: 0.2213006920121294, MAE: 0.3716801816225052
-
-- MSE: 0.1953067
+dropout: 0.5 gcn: 0            output/d0b7010a93b210ff6a4e33801e7afdc2
+dropout: 0.5 gcn: 3           output/0504a719414fc9ccf481b61147354eb1
+dropout: 0.5 gcn: 5           output/f4a109bd27d2c7fd0d3343a5e8122e4b
+dropout: 0.5 gcn: 7           output/c1cfd076ac66f2312441cefc54f1d29c
+dropout: 0.7 gcn: 0           output/0f67a04a6004c8af4c99884709d616f7
+dropout: 0.7 gcn: 3           output/dec6aa6c64630cca3e89aa119553652b
+dropout: 0.7 gcn: 5           output/b267adfe1a8988e1a903a32828aa1ee6
+dropout: 0.7 gcn: 7           output/0c577fc166849b97e77bc08bbd269858
+dropout: 0.9 gcn: 0           output/0aaba22e5367243182d4ac47040031fc
+dropout: 0.9 gcn: 3           output/27ce7286e4a5d0459462b7b07f1ed199
+dropout: 0.9 gcn: 5          output/c263b3d43afc62280fd04d777f6e64ce
+dropout: 0.9 gcn: 7      output/4d5b240fa1989bd02811222c39b4e5d2
 
 
-# Document encoder pretraining
-
-## With DI shuffling
-
-### Pretraining
-
-```
-{'aggr_grudim': '300', 'att': 'False', 'clipnorm': '5.0', 'dropout': '0.7', 'emb_dim': '50', 'emb_fix': 'False', 'enc_fix': 'False', 'encdim': 'None', 'model_type': 'nea', 'mot': 'True', 'pretrained': 'False', 'shuf': 'di'}
-```
-
-val_acc: 0.879913
 
 
-### TN16+PN10+pretrain (di. shuffle, no fine-tuning)
-
-- MSEs: 
-- MSE:
 
 
-### TN16+PN10+pretrain (di. shuffle, with fine-tuning)
-
-- MSEs: 
-- MSE: 
 
 
-## With sentence shuffling
+NEA : Organization
 
-### Pretraining
+dropout: 0.5 gcn: 0          585ef71cda5553972ac5119f55de4d1f
+dropout: 0.5 gcn: 3          a0baa0b1a3401d98d79c1934d0fd5e84
+dropout: 0.5 gcn: 5          ab22c31fb8837d68e704b090276c2cc3
+dropout: 0.5 gcn: 7          37655d7a317813389063c1e3839d2fef
+dropout: 0.7 gcn: 0          db070d08090101d6445d781ea06350d5
+dropout: 0.7 gcn: 3          fd3116c8f5dd58263df271933724d6fb
+dropout: 0.7 gcn: 5          4c962648da55134c4d1576be590b8eba
+dropout: 0.7 gcn: 7          5aaae1e83e4e1b8997dfe4b40dbdf782
+dropout: 0.9 gcn: 0          8165b0d7fe06396c04f1c39076ebf1f7
+dropout: 0.9 gcn: 3          814d05485ae923d15368b43426cd3971
+dropout: 0.9 gcn: 5          adf11aa9cacb5f0b4b00ad5c38e936c1
+dropout: 0.9 gcn: 7          c06a012dd3d3031685889c0ff7e1fcc2
 
-```
-aggr_grudim=300
-att=False
-clipnorm=5.0
-dropout=0.7
-emb_dim=50
-emb_fix=False
-enc_fix=False
-encdim=None
-model_type=nea
-mot=True
-pretrained=False
-shuf=sentence
-```
+NEA : Organization (di-aware)
 
-val_acc: 0.732533
+dropout: 0.5 gcn: 0           output/1039492b1a8149c8678a7691d868cdd4
+dropout: 0.5 gcn: 3           output/5e9a01bb85b7decd54eaa7b3d772e6dd
+dropout: 0.5 gcn: 5           output/edbd3a83c9d5bb3387b4b26aeb82020d
+dropout: 0.5 gcn: 7           output/f925aff9952aef47e3d85bdbe98ae6a9
+dropout: 0.7 gcn: 0           output/82c3747b5f6ce60773452c2d024dbf33
+dropout: 0.7 gcn: 3           output/005e77c8cec74c16b945ec058dc596ce
+dropout: 0.7 gcn: 5           output/eb58ef1ee3244de44ecd62a5da976b76
+dropout: 0.7 gcn: 7           output/7f457144e5992d4d07e463f7e386ec9b
+dropout: 0.9 gcn: 0           output/9cfafed589d8143eb9d52a357c88a38b
+dropout: 0.9 gcn: 3           output/b456c6e993539c99df7c42c32cd06073
+dropout: 0.9 gcn: 5         output/d0ae72d0ae7243348d9cba7783645e33
+dropout: 0.9 gcn: 7            output/07258531ca0151cc9351fe5c67f13d3d
 
+NEA : ArgumentStrength
 
-### TN16+PN10+pretrain (sent. shuffle, no fine-tuning)
-
-```
-aggr_grudim=300
-att=False
-clipnorm=5.0
-di_aware=False
-dropout=0.7
-emb_dim=50
-emb_fix=True
-enc_fix=True
-encdim=None
-model_type=nea_aft_pretrain
-mot=True
-preenc=output_enc/c2c4d855a06224fd1096834eed11920d
-pretrained=False
-pseq=True
-pseq_embdim=16
-pseq_encdim=400
-```
-
-- MSEs: [0.1708993219855502, 0.188276010211909, 0.16168191047724936, 0.21673573230273174, 0.21641181262379064]
-- MSE: (0.1908009575202462, STDEV: 0.022710780694247448)	
+dropout: 0.5 gcn: 0          014cbc3d9686cc4b33a65c7d9ebc2ce4
+dropout: 0.5 gcn: 3          ba1b8e7b540ed58ca871907510fbe6e1
+dropout: 0.5 gcn: 5          f1ccc7a68be0af40297e7f05bc62404f
+dropout: 0.5 gcn: 7          f827ae73854a2c2eeb457afece4a5372
+dropout: 0.7 gcn: 0          b105a422e7857c420d2e06055149bc81
+dropout: 0.7 gcn: 3          84e56f9be483b0be1ec7fa1d345e7a49
+dropout: 0.7 gcn: 5          64d615063f2d5996ce74e50c39189aa2
+dropout: 0.7 gcn: 7          660d7bf869cd46588ff57cabec6df0a0
+dropout: 0.9 gcn: 0          4f4e55267fcabc3b01c39f719d559bc6
+dropout: 0.9 gcn: 3          a7dd582b0963d3c6d1c2da77d31d15de
+dropout: 0.9 gcn: 5          67815fcf1aa941544b30692f9da1edc2
+dropout: 0.9 gcn: 7          4cab96cb360ac43b6f5a665c11eec6d5
 
 
-### TN16+PN10+pretrain (sent. shuffle, with fine-tuning)
+NEA+PN10 : Organization
 
-```
-aggr_grudim=300
-att=False
-clipnorm=5.0
-di_aware=False
-dropout=0.7
-emb_dim=50
-emb_fix=False
-enc_fix=False
-encdim=None
-model_type=nea_aft_pretrain
-mot=True
-preenc=output_enc/c2c4d855a06224fd1096834eed11920d
-pretrained=False
-pseq=True
-pseq_embdim=16
-pseq_encdim=400
-```
+dropout: 0.5 gcn: 0           7763fc35cd1daac699008774fe7c42fa
+dropout: 0.5 gcn: 3           025b952bcf83b1efcec3a1b8aea21b9b
+dropout: 0.5 gcn: 5           2b685900b2a719b923c780de7042e3cd
+dropout: 0.5 gcn: 7           c177a00515914e2c33d32c3a7af6aa46
+dropout: 0.7 gcn: 0           88e8a25fc014694e8fdaf66287ce2991
+dropout: 0.7 gcn: 3           69c193cd68fcc92719d21e9c79e5d461
+dropout: 0.7 gcn: 5           eb43515f86e93ce1f91e61ab57249742
+dropout: 0.7 gcn: 7           4a0e9ec50a70ef4f17787b47be450b41
+dropout: 0.9 gcn: 0           1f87d28de4874ef5084694297c751d0f
+dropout: 0.9 gcn: 3           7763fc35cd1daac699008774fe7c42fa
+dropout: 0.9 gcn: 5           915863653965b2a5758bb50a22b202da
+dropout: 0.9 gcn: 7           327edafe70f4a016f71ef4bb49dfb66d
 
-- MSEs: [0.17768359446192292, 0.16614793271124353, 0.1609080225191747, 0.20891687420427643, 0.21897310227394462]
-- MSE: 0.18652590523411244, STDEV: 0.023254677920348094
+NEA+PN10 : Organization (di-aware)
 
+dropout: 0.5 gcn: 0           output/7d7e5fc5adc78346483968c18201e143
+dropout: 0.5 gcn: 3           output/db259d53ee197b5f9a561481f46aab4f
+dropout: 0.5 gcn: 5           output/4139a50500356df499fb4b44626a81fa
+dropout: 0.5 gcn: 7         output/acb416c2e86bc4c18d7bd3d73eaebd45             output/3d109964d4a10e69bf2701da8f6eb87b
+dropout: 0.7 gcn: 0           output/acb347237737a61ccfd15aebf96e3088
+dropout: 0.7 gcn: 3           output/e7820370ed00bcc6439d616d93910aec
+dropout: 0.7 gcn: 5           output/f3db200e4284bd3d9cc4046448bc35ae
+dropout: 0.7 gcn: 7            output/b1bb1710766f1116723b3e0b3fd2c77e
+dropout: 0.9 gcn: 0           output/3753f9fe0742fadb47b106728fd5de09
+dropout: 0.9 gcn: 3            output/15c009dc2391f6ecae330efdfb0ca129
+dropout: 0.9 gcn: 5         
+dropout: 0.9 gcn: 7 
+
+NEA (pretrained : sentence shuffle) :   Organization
+
+dropout: 0.5 gcn: 0          output/c62aac06e6525041c0a5ecfab5962f94   output/9c8ca8555d95e27e5ea16b79c0726eaf output/d9a64d59b7487cec61bb8d2689ebab6b
+dropout: 0.5 gcn: 3          output/b8d3a3c6dbaab59438f14dc2c220f992   output/cf55f80ef8c3e478bc0b58370bba5196
+dropout: 0.5 gcn: 5           output/4c356cab226ba541aa938a358d8dbd92  output/bad172fa65c1e0de32403fe7397b1bb3
+dropout: 0.5 gcn: 7           output/cf890d85473cfb30390aa81486564d06  output/3e46a22df57c199c958a93779feb07f9
+dropout: 0.7 gcn: 0           output/b975653f30709ae183478371d27d8c4f output/3bb1a7c16c7a255c4208a5dfa12bde34
+dropout: 0.7 gcn: 3           output/0664dd879c38a1fd40ea200064886726  output/0efa4b84845556b14663c6795d7ce390
+dropout: 0.7 gcn: 5           output/9fd0e5126082e3a8234997a18cbb28fa  output/a6278d4b04edcc7243f809a9283a12c5
+dropout: 0.7 gcn: 7           output/17547d4aac6f442d2bc6d2d0e5d79c31  output/566312b3d24fb317fb64eebc058733c2
+dropout: 0.9 gcn: 0           output/209aa6498fe061b0cad824d02a42711b   output/b196f445c4012c31aa89b4a19084c5dc
+dropout: 0.9 gcn: 3           output/62c51e7dbcf5c4a42d598fb18fd83b3e  output/19065f66745d13e0e932723a1ef1389a
+dropout: 0.9 gcn: 5          output/a5cdf82c2298ab6fa334eb0ded775477   output/a5a57c8962e82c25fc9684c8dac264f7
+dropout: 0.9 gcn: 7           output/6f579ab8bed3aabd829694eb92d9e2fc output/daf7ec03cddd72c7dcf611635ab55e4e
+
+
+
+
+NEA+ PN10 (pretrained : sentence shuffle)                                              
+
+dropout: 0.5 gcn: 0           output/914cf5bb36742b73dddd73e14fd4ea71    output/1ec3210e474972dce371680c9a291968 
+dropout: 0.5 gcn: 3           output/9d54a29c7c54a52d3ea0e6b808ed4cb7 output/6c19318bc0a5b2ce2312b1e57cf699fa
+dropout: 0.5 gcn: 5           output/73586ec4f2b19ea3dfb76ded1e8822cb output/e9225ea02ed1f133951302a36779896f
+dropout: 0.5 gcn: 7           output/f7f8cf1f969bae4d84b20cf0f7ef1876  f5e6cf1d4749c6028755d539bac72e62
+dropout: 0.7 gcn: 0           output/e4f8662c12d28fc9b3726ba1797b66ac   38b8c7dbda6b5ce5f72a2b86ad2304d1
+dropout: 0.7 gcn: 3           output/65bf6b65bcf913389cfacacc40a36d0e   fb6c99223562afb5625a857478250852
+dropout: 0.7 gcn: 5           output/a741eb3285c63842460739eeb4008194   720109a25f607e9615c403d47a886a6b
+dropout: 0.7 gcn: 7           output/894c74715e2d88e3586ff7011924f3f8   1f169ad8fd9bc87906f8dc4b132034db
+dropout: 0.9 gcn: 0           output/9ecc42f8fbf5102906f3cf02f8645e3a    7ac483ad58a479e7642b1d02059a533d
+dropout: 0.9 gcn: 3           output/ff3bafe1ef3b7f2b94b3dfc240cf1f1c  97dd4d31914808548b97ef525a1ace46
+dropout: 0.9 gcn: 5           output/b66731c2816b868f432a5750d0713bbf  4a5d643a58ad599ef69cbac3cb69f38c
+dropout: 0.9 gcn: 7           output/4a464cd550319be75c3208c2b55daff0  327e05875a8675f2a6cd61d4f5b41768
+
+NEA+ PN10 (pretrained : sentence shuffle)  (pre-embed)
+
+dropout: 0.5 gcn: 0             output/deae78077bfea02c469b17e44f1953bd
+dropout: 0.5 gcn: 3          output/c1441636af7721fffe140a96e4b42e83    output/c1441636af7721fffe140a96e4b42e83
+dropout: 0.5 gcn: 5           output/bc4c6e9ee7881e7232160fa6a94b121e   output/bc4c6e9ee7881e7232160fa6a94b121e
+dropout: 0.5 gcn: 7           output/4b45e701ae03ab79ab023b650f5136b7
+dropout: 0.7 gcn: 0           output/90b0a303829986ea489621a7a39f05ae
+dropout: 0.7 gcn: 3           output/70fe1608df872a7650e9f157847b6031
+dropout: 0.7 gcn: 5           output/2497635cb9db276a61fd9815d9c812eb
+dropout: 0.7 gcn: 7           output/32098ef2695356722693b0fe4d8d19a7
+dropout: 0.9 gcn: 0           output/e3cd942ba228c8b18a95ac2857373a03
+dropout: 0.9 gcn: 3           output/4762a70c2780478a6e123a94a55dc669
+dropout: 0.9 gcn: 5         output/dd4ae5219e08bc07ba297440980b5e51
+dropout: 0.9 gcn: 7         output/93d2f41ddf3ad24c8a23b7aaf842c5e7      output/93d2f41ddf3ad24c8a23b7aaf842c5e7
+
+
+NEA (pretrained : sentence shuffle) :   ArgumentStrength                                        pre-embed                       
+
+dropout: 0.5 gcn: 0            output/92969165ecaf7495cfb146bb696c590b           output/b91424d49b42514e9cc81c7dcab9da31
+dropout: 0.5 gcn: 3            output/6501d7b8682b54451c88d36911ce7c27            output/913776c2e0808f7e022bc8d053dc96c0
+dropout: 0.5 gcn: 5           output/0de5d7645fce93a862f6c706a48d5a0c             output/2c0c7ca962a0cc1cb0eac647c1da4f9a
+dropout: 0.5 gcn: 7           output/661c2a618b8d86cb3834695d1fabeb0b             output/85945ac88b2362fec4a4fd724ab4ca18
+dropout: 0.7 gcn: 0           output/31895435530bbbb85ec88728727a3751             output/67d415a2f0bfab701550c46f31fa9357
+dropout: 0.7 gcn: 3            output/037660fe02c5724f3332fa187b2d511e            output/848181b18bc5932ba6b84446be047e78 
+dropout: 0.7 gcn: 5           output/beb8f4fe4476c9ca5fb4c5a53a36659f              output/dd2ef06cdbed123199f8513dfc19b989
+dropout: 0.7 gcn: 7           output/d080e172e8daea7b137c5ae62405d72c            output/f3867bea57d2538539a396db36d22624
+dropout: 0.9 gcn: 0           output/43d0ae649116047c1315e89ae3a43957            output/da25c376d995713f8cc686e2aa125e99 
+dropout: 0.9 gcn: 3           output/593034d793a7c13c324c5d83ca8ff1ad         output/dc3dbc8a03a8501d1aa143818fd04502
+dropout: 0.9 gcn: 5           output/28029b3591d57c096382598641955557           output/722305eb0bacfb0d1f8882dd27eaea23 
+dropout: 0.9 gcn: 7           output/d79ac4f8e50bb42447ec2d991f1cb15e         output/53fc24cba35351b7feb4515b6e5df7d7
+
+
+NEA (pretrained : sentence shuffle : with para) :   ArgumentStrength   
+
+dropout: 0.5 gcn: 0           output/0b662840803788627f68317bc8aefac7
+dropout: 0.5 gcn: 3          output/d3ccb02179be53056ebf9121402d7291
+dropout: 0.5 gcn: 5           output/b7a812baf6e4b2ca09893cfa62e67862
+dropout: 0.5 gcn: 7           output/00b6db5ffb15f25849addd25614e0967
+dropout: 0.7 gcn: 0           output/7b09e389de8c9c024e3f95ef62c4acc0
+dropout: 0.7 gcn: 3           output/b83e59af42308603d4799e165e010034
+dropout: 0.7 gcn: 5           output/e3e2822e454729cdf7cae5f5b4233a93
+dropout: 0.7 gcn: 7           output/87d889321a5936c2f599e3ed06f4d774
+dropout: 0.9 gcn: 0           output/d811ad15c1de4fb4384f06f39f5e924a
+dropout: 0.9 gcn: 3           output/daa86d3a6d1297291ad23f991cf68b5d
+dropout: 0.9 gcn: 5          output/baff985fba79eed9485adea54391e6d5
+dropout: 0.9 gcn: 7         output/ffca357b2a61acd36aabb2f9df80cec4
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Organization
+
+1/ NEA + PN10 + Prompt:
+
+
+dropout: 0.5 gcn: 0           output/704a6bee03960e9af298fff425644a5b
+dropout: 0.5 gcn: 3          output/9fdf86806b4be1e3f7af3faebba712c9
+dropout: 0.5 gcn: 5           output/367c00ff3d7ebe9c403b5fb49fef7c61
+dropout: 0.5 gcn: 7           output/551740a545cb386145b3b7eb6ee832c2
+dropout: 0.7 gcn: 0           output/703cebfe6ea169688400d001a492248e
+dropout: 0.7 gcn: 3           output/f54bffb4b924ce7fb846f06baebed1cc
+dropout: 0.7 gcn: 5           output/381753616c5c28892fc63302cdf927bb
+dropout: 0.7 gcn: 7           output/6c8f699468dd41df6400427eab90c5a4
+dropout: 0.9 gcn: 0           output/9c8b17bbfa4d0f86cbce7bd97487face
+dropout: 0.9 gcn: 3           output/b825a5d792982a768bdf495c8e2a36e7
+dropout: 0.9 gcn: 5          output/17a881572dbf423ec5d4e639ce0124e6
+dropout: 0.9 gcn: 7            output/9d2254054916053259625522f50bc661
+
+
+
+2/ NEA + Prompt:
+
+dropout: 0.5 gcn: 0          output/ff76bc8893ee599cb9b9f9bf2c9a9ed8  
+dropout: 0.5 gcn: 3          output/4280376f3591d0566fbc3b97257bf567
+dropout: 0.5 gcn: 5           output/73bdc402ea74aefec309397f876ea400
+dropout: 0.5 gcn: 7           output/2aed2455da6ee42449a6e63c3bc986e3
+dropout: 0.7 gcn: 0            output/0afde529a44edd8940fb34025162f7ab
+dropout: 0.7 gcn: 3           output/7e2372e82cd5e80ad2263a01518fc45f
+dropout: 0.7 gcn: 5           output/25bafbea1ce7aa1366811a3748ce59f5
+dropout: 0.7 gcn: 7           output/4cce248a397ccb3b76ba8ba80232d191
+dropout: 0.9 gcn: 0           output/6a60eac3be28666fd6a99374f41ffc27
+dropout: 0.9 gcn: 3           output/b84e26e87677f6b09faf9767d81c851c
+dropout: 0.9 gcn: 5          output/f629535f110cc12780e066e3eec5606d
+dropout: 0.9 gcn: 7         output/e5d40fcf0096d28c5ee93733293fed78
+
+
+
+## ArgumentStrength
+
+
+1/ NEA + Prompt:
+
+
+dropout: 0.5 gcn: 0           output/0e9e091a44616661c620c6f6609217b5
+dropout: 0.5 gcn: 3          output/3a203391f62ce4f05275b59bd230f2c8
+dropout: 0.5 gcn: 5          output/32c6c67a7083bd65930ddaefc56a16ee 
+dropout: 0.5 gcn: 7           output/4df12e6b7f12eeba73e69c656f4db7f0
+dropout: 0.7 gcn: 0           output/13d452cdff69c644ef03a55b28385c86
+dropout: 0.7 gcn: 3           output/1ab342a9353299c46c961e9f06f12e09
+dropout: 0.7 gcn: 5           output/d52dad09d55167824b4514220fa1d391
+dropout: 0.7 gcn: 7           output/abf82b9f9e9c664c53e92e1e6ee5e896
+dropout: 0.9 gcn: 0           output/b6f4de5597b8b0ee551c7ee054b96dad
+dropout: 0.9 gcn: 3           output/2356c05c9fc695057b73692e52730384
+dropout: 0.9 gcn: 5         output/cc6921b6411fafd35673c9e97205f645
+dropout: 0.9 gcn: 7          output/ec762358229e5f17b38681fcfd73e06a
+
+
+
+
+
+
+
+
+
+
+
+Paragraph shuffling:
+
+1/ NEA + PN10 (Para shuffled, not fixed):
+
+
+dropout: 0.5 gcn: 0           output/f627683bc970023d9d08e585f2b69e52
+dropout: 0.5 gcn: 3          output/b6168c8f51b10ae6b16d9b3507efb938
+dropout: 0.5 gcn: 5           output/5176d8733aee35d87c30fab1913a4ed5
+dropout: 0.5 gcn: 7           output/ad3f0d51d365bf339fe74212beda615e
+dropout: 0.7 gcn: 0           output/8310dff01972a532c8896c06da47af95
+dropout: 0.7 gcn: 3           output/a2525f65d75263a2f0e0b25d8d75ecfc
+dropout: 0.7 gcn: 5           output/e0f6823eef71022650f8c0f93f25de24
+dropout: 0.7 gcn: 7            output/a8ebe6fded8f1c48361d78f883418754
+dropout: 0.9 gcn: 0           output/7edfbdbd11f61f7b6b1301050ea72f4a
+dropout: 0.9 gcn: 3           output/1c9672c1cf97bc79f6a85a4bfe543ebd
+dropout: 0.9 gcn: 5         output/7da67bbcf7c6814c5760bf2f46ffcdae
+dropout: 0.9 gcn: 7         output/87cd6aeb0dca07da64ad715666f0a562
+
+
+
+2/ NEA + PN10 (Para shuffled, fixed):
+
+
+dropout: 0.5 gcn: 0         output/6a7b7b0e22d45220301a36725f3efe78  
+dropout: 0.5 gcn: 3          output/18dc552a85e5127cdbe1c38d658b1ce4
+dropout: 0.5 gcn: 5           output/0673d67d7aea14c5152cbb3afb5b8d1e
+dropout: 0.5 gcn: 7           output/1c9165ae32d3c2efe24a86f84ae301cb
+dropout: 0.7 gcn: 0           output/1b29f6689ea642292f9abea8ef63a9ff
+dropout: 0.7 gcn: 3           output/7352166834b89c9ebe6e3dbc626712c0
+dropout: 0.7 gcn: 5           output/2e4d10a66fecc73e6a6a44e4beff5914
+dropout: 0.7 gcn: 7           output/e28f57ab7e4bd8144dc3f840b26e4463
+dropout: 0.9 gcn: 0           output/44284b2980a4c2f02900b532630ee5c0
+dropout: 0.9 gcn: 3           output/68ac71bd419a84814925111369195dfe
+dropout: 0.9 gcn: 5         output/fafde9e6ceada47f25a43ba68f112944
+dropout: 0.9 gcn: 7 
+
+
+3/ ArgumentStrength : NEA (Para shuffled, not fixed):
+
+dropout: 0.5 gcn: 0           output/c1ac169c6098c2b0c30b8f2b51206780
+dropout: 0.5 gcn: 3          output/6d156b47deb6cdba05667dc7de38755b
+dropout: 0.5 gcn: 5           output/90eeea648765b70b0b337a79c435bcc2
+dropout: 0.5 gcn: 7           output/cc2704ba68cca393a577ba9a4bd9fd57
+dropout: 0.7 gcn: 0           output/8783845537981f4257c9798436321dac
+dropout: 0.7 gcn: 3           output/e029eb5bd87af32589699e56bc3b87ef
+dropout: 0.7 gcn: 5           output/4d457e017d3e7543a9b230fd09aad9a8
+dropout: 0.7 gcn: 7           output/5a868581b6dff74cc6330a22462c3d6e
+dropout: 0.9 gcn: 0           output/c3b69499dff9b4c53e3fc33c3fccea1f
+dropout: 0.9 gcn: 3           output/c283d47772c0543349609314774d1465
+dropout: 0.9 gcn: 5         output/c90a52276ad9a15e097f2828baaa31af
+dropout: 0.9 gcn: 7          output/d3b36e5aaa49ef74beb816aeb72f0347
+
+
+
+4/ ArgumentStrength : NEA (Para shuffled, fixed):
+
+
+dropout: 0.5 gcn: 0           output/9c6f0d1965d9862a72a612f39166f786 
+dropout: 0.5 gcn: 3          output/d1f08c78062c3b41207a88168d0ce936
+dropout: 0.5 gcn: 5           output/d77b5e268368e20f5b10eba6a9b2156d
+dropout: 0.5 gcn: 7           output/4af80c28cd87c0f61ffd84739c1cd497
+dropout: 0.7 gcn: 0           output/1cc55ad5f250713f3835ae32dbdebb99
+dropout: 0.7 gcn: 3           output/bc20f409e272813267e00727ba80983c
+dropout: 0.7 gcn: 5           output/ace3974a62d327d6d4c2f8c4134f267d
+dropout: 0.7 gcn: 7           output/a502db12758386291eac4d120b9da4e3
+dropout: 0.9 gcn: 0           output/ac900d35ea557c5b520760206e15e6b4
+dropout: 0.9 gcn: 3           output/7572f441f70fa818df4eb41dd5afc5ad
+dropout: 0.9 gcn: 5         output/6aadce3d4cdc9f1b0539de59335d1bf8
+dropout: 0.9 gcn: 7          output/8b9ace0429161b29b417efdaa4540856
+
+
+5/ TN16+PN10+ Prompt + pretrained(para-shuffled, not_fixed)
+
+
+dropout: 0.5 gcn: 0      output/d27a0265a65ca41a8c1ce6e215b3c1f2     
+dropout: 0.5 gcn: 3      output/7d1734d2d93c0eee792b0c4a9b901764    
+dropout: 0.5 gcn: 5        output/484b49f420cc4433b2e99e42fabc3e1e   
+dropout: 0.5 gcn: 7        output/000bc601e59ae61f2fb3806c660c65b6   
+dropout: 0.7 gcn: 0         output/02bbcc10659ef33e18428d412b7d8e06  
+dropout: 0.7 gcn: 3          output/95ad743c667d29e1801e4d7e913ad690 
+dropout: 0.7 gcn: 5           output/cefbdf6c4f7cc02dc112c5e508195902
+dropout: 0.7 gcn: 7           output/1fcfaa5ddfda81584b1295380f8f2500
+dropout: 0.9 gcn: 0           output/3f71721fda904913c18d86fc42bdfc7f
+dropout: 0.9 gcn: 3           output/3324dc410f6cf318f6c92b7e96830b65
+dropout: 0.9 gcn: 5         output/ee52b5940e4fbd194d7e4d7974404ccd
+dropout: 0.9 gcn: 7         output/8d061affe9729792bab221ec1fb7e477
+
+
+5/ (ArgumentStrength) TN16+ Prompt + pretrained(para-shuffled, not_fixed)
+
+
+dropout: 0.5 gcn: 0        output/f3d07e130b90217144e48334789786d0
+dropout: 0.5 gcn: 3         output/6695169cdec66a1be1cca21e2706dc66 
+dropout: 0.5 gcn: 5          output/66377a870cc43388eea556209fbea4b9 
+dropout: 0.5 gcn: 7          output/4321c600ea3bdd0e691cf01ef1b63672 
+dropout: 0.7 gcn: 0          output/bb36cad6c09600c3d75c4fe121ff0966 
+dropout: 0.7 gcn: 3           output/a72584648132736e39555dab8c874dbf
+dropout: 0.7 gcn: 5            output/a69c340fc17c1140e65370784fc3fed5
+dropout: 0.7 gcn: 7           output/42077fc46dd921960b4576b57430445a
+dropout: 0.9 gcn: 0           output/b95020b035fd05da284aae06a425b62b
+dropout: 0.9 gcn: 3           output/6af19a898b70ba3a7c2fda298faaca61
+dropout: 0.9 gcn: 5         output/8f254b13207af3b262b02ecb56fc679e
+dropout: 0.9 gcn: 7          output/a11a7500a0c1ef2f9f989c094c87cdab
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1/ NEA (GRU) (Para shuffled, not fixed):
+
+
+dropout: 0.5 gcn: 0       output/f9c13e51a1ab8fecde1f6db85a0003cd    
+dropout: 0.5 gcn: 3          output/155848bc508f93ed8b18fb857b9fcf8f
+dropout: 0.5 gcn: 5           output/d3afa32dc648ea173ec9c0b41df5187d
+dropout: 0.5 gcn: 7            output/e1d6e9a87eee2bb7111551193cf0c60a
+dropout: 0.7 gcn: 0           output/f68424a5a96e865387596b313963d18d
+dropout: 0.7 gcn: 3           output/d0f89f2648063e94954c96cf411adaf9
+dropout: 0.7 gcn: 5           output/ea8f8649b90b91d3cbd5d8a3aa4fb1b7
+dropout: 0.7 gcn: 7           output/2b43c9a8bc2e75a43f0d99daebb59a46
+dropout: 0.9 gcn: 0           output/ad50c797658376af223675f18c5bbf22
+dropout: 0.9 gcn: 3           output/18b040f6ab0a88fc2fac65fcaea8deb9
+dropout: 0.9 gcn: 5         output/c4be0321cfe9635586b4ce16ec45d1e7
+dropout: 0.9 gcn: 7        output/10782d92177352ef50c73967d377d272
+
+
+
+
+2/ NEA + PN10 (Para shuffled, not fixed):
+
+
+dropout: 0.5 gcn: 0           output/9e159522402a31c8f3e57147d936d1e2
+dropout: 0.5 gcn: 3          output/5841904b703799c328ecaa48c4988a59
+dropout: 0.5 gcn: 5           output/281f5956a611714f6e33c62711ad6d7b
+dropout: 0.5 gcn: 7           output/e7cbb7962c94c4a2d6ce2d757c0f473c
+dropout: 0.7 gcn: 0            output/0f8db47e23edc3db4ce390f78c9c36e9
+dropout: 0.7 gcn: 3           output/7a77707016281fda95cc5c034e6b3c98
+dropout: 0.7 gcn: 5            output/7f0551e3d952784bee0c783bee8efc48
+dropout: 0.7 gcn: 7           output/eeb1ad44dcf12c6f1a2c02ae645ccfdf
+dropout: 0.9 gcn: 0           output/d6a244b9ad4768ce8a2f41156d882683
+dropout: 0.9 gcn: 3            output/12bda8c94bb0bcd4355c965717f94e40
+dropout: 0.9 gcn: 5         output/f29f6267835a6592fb1843500261c427
+dropout: 0.9 gcn: 7        output/c9b824d34fe90fba323fbd6645e88d95
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dropout: 0.5 gcn: 0           
+dropout: 0.5 gcn: 3          
+dropout: 0.5 gcn: 5           
+dropout: 0.5 gcn: 7           
+dropout: 0.7 gcn: 0           
+dropout: 0.7 gcn: 3           
+dropout: 0.7 gcn: 5           
+dropout: 0.7 gcn: 7           
+dropout: 0.9 gcn: 0           
+dropout: 0.9 gcn: 3           
+dropout: 0.9 gcn: 5         
+dropout: 0.9 gcn: 7 

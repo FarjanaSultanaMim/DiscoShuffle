@@ -57,28 +57,45 @@ def main(args):
     pre_embed = data.load_pretrained_embeddings() if args.mp_pretrained else None
     essay_icle = data.load_essay('/home/mim/ICLE_all_data.csv')
     
-    with codecs.open("/home/mim/training_set_rel3.tsv", "r", "Shift-JIS", "ignore") as file:
-        df_asap = pd.read_table(file, delimiter="\t")
-    essay_asap=[]
-    for i in range(df_asap.index[0],(df_asap.index[-1]+1)):
-        essay_asap.append(df_asap.at[i,'essay'])
-        
     file_t="/home/mim/TOEFL11_essay.xlsx"
     df_t=pd.ExcelFile(file_t)
     df_t= df_t.parse('Sheet1')
     essay_t=[]
     for i in range(df_t.index[0],(df_t.index[-1]+1)):
         essay_t.append(df_t.at[i,'essay'])
+    
+    if args.mp_allessay:
         
-    file_icn="/home/mim/ICNALE_all_data.xlsx"
-    df_icn=pd.ExcelFile(file_icn)
-    df_icn= df_icn.parse('Sheet1')
-    essay_icn=[]
-    for i in range(df_icn.index[0],(df_icn.index[-1]+1)):
-        essay_icn.append(re.sub('\ufeff', '', df_icn.at[i,'essay']))
+        with codecs.open("/home/mim/training_set_rel3.tsv", "r", "Shift-JIS", "ignore") as file:
+            df_asap = pd.read_table(file, delimiter="\t")
+        essay_asap=[]
+        for i in range(df_asap.index[0],(df_asap.index[-1]+1)):
+            essay_asap.append(df_asap.at[i,'essay'])
+
+        file_icn="/home/mim/ICNALE_all_data.xlsx"
+        df_icn=pd.ExcelFile(file_icn)
+        df_icn= df_icn.parse('Sheet1')
+        essay_icn=[]
+        for i in range(df_icn.index[0],(df_icn.index[-1]+1)):
+            essay_icn.append(re.sub('\ufeff', '', df_icn.at[i,'essay']))
+
+        essays = essay_icle + essay_asap + essay_t + essay_icn 
         
-    essays = essay_icle + essay_asap + essay_t + essay_icn  
-    essays = data.preprocess_essay_encoder(essays, args)
+    elif args.mp_2essay:
+        
+        essays = essay_icle + essay_t
+    
+    else:
+        
+         essays = essay_icle
+            
+    if args.mp_wPara:
+        
+        essays = data.preprocess_essay_encoder_wPara(essays, args)
+
+    else:
+        
+        essays = data.preprocess_essay_encoder(essays, args)
     
     print("Length of all essays")
     print(len(essays))
@@ -89,15 +106,25 @@ def main(args):
     elif args.mp_shuf == "di":
         di_list = data.load_discourse_indicators()
         main_essay, main_scores = data.create_training_data_for_di_shuffled_essays(essays, di_list)
+        
+    elif args.mp_shuf == "para":
+        main_essay, main_scores = data.create_training_data_for_paragraph_shuffled_essays(essays)
 
     main_essay_t, main_essay_v, score_t, score_v = train_test_split(
         main_essay, main_scores,
         test_size=0.2, shuffle=True, random_state=33)
     
-    print(main_essay_v[:2])
+    print(main_essay[4545])
+    print(main_essay[-1])
 
     # Create a tokenizer (indexer) from the training dataset.
-    tokenizer_m = model.create_vocab_encoder(main_essay_t, args)
+    
+    if args.mp_preenc != None:
+        
+        tokenizer_m = pickle.load(open(os.path.join(args.mp_preenc, "tokenizer.pickle"), "rb"))
+    
+    else:
+        tokenizer_m = model.create_vocab_encoder(main_essay_t, args)
     
     with open(os.path.join(out_dir, "tokenizer.pickle"), "wb") as f:
         pickle.dump(tokenizer_m, f)
@@ -119,6 +146,11 @@ def main(args):
                                             args,
                                             )
     mainModel.summary()
+    
+    if args.mp_preenc != None:
+        mainModel.load_weights(os.path.join(args.mp_preenc, "encoder.hdf5"), by_name=True)
+
+    print("Starting training.")
 
 
     optimizer_main=keras.optimizers.Adam(clipnorm=args.mp_clipnorm)
@@ -183,10 +215,23 @@ if __name__ == "__main__":
     parser.add_argument(
         '-punct','--punctuation', dest='mp_punct', action="store_true",
         help="Whether to use punctuation or not.")
+    parser.add_argument(
+        '-enc','--pretrained-encoder', dest='mp_preenc', type=str,
+        help="Path to pretrained encoder.")
+    
+    parser.add_argument(
+        '-allessay','--all-essay', dest='mp_allessay', action="store_true",
+        help="Whether to use punctuation or not.")
+    parser.add_argument(
+        '-wpara','--w-para', dest='mp_wPara', action="store_true",
+        help="Whether to use paragraph boundary or not.")
+    parser.add_argument(
+        '-2essay','--2essay-para', dest='mp_2essay', action="store_true",
+        help="Whether to use paragraph boundary or not.")
     
     parser.add_argument(
         '-shuf','--shuffle-type', dest='mp_shuf', type=str, required=True,
-        help="Shuffling type (sentence, di).")
+        help="Shuffling type (sentence, di, para).")
     args = parser.parse_args()
 
     main(args)

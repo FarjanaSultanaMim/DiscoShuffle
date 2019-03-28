@@ -63,7 +63,15 @@ def main(args):
     
     if args.mp_di_aware:
         di_list = data.load_discourse_indicators()
-        essays = data.preprocess_essay(essays, di_list, boseos=True)
+        essays = data.preprocess_essay(essays, args, di_list, boseos=True)
+        
+    elif args.mp_model_type == "nea_aft_pretrain" and not args.mp_para:
+        
+        essays = data.preprocess_essay_encoder(essays, args, boseos=True)
+        
+    elif args.mp_no_para:
+        
+        essays = data.preprocess_essay_encoder(essays, args, boseos=True)
     
     else:
         essays = data.preprocess_essay(essays, args, boseos=True)
@@ -304,8 +312,14 @@ if __name__ == "__main__":
         '-punct','--punctuation', dest='mp_punct', action="store_true",
         help="Whether to use punctuation or not.")
     parser.add_argument(
+        '-para','--para', dest='mp_para', action="store_true",
+        help="Whether to use punctuation or not.")
+    parser.add_argument(
         '-di','--di-aware', dest='mp_di_aware', action="store_true",
         help="Discourse indicator aware model.")
+    parser.add_argument(
+        '-nopara','--no-para', dest='mp_no_para', action="store_true",
+        help="Whether to use punctuation or not.")
     parser.add_argument(
         '-s','--seed', dest='mp_seed', type=int, 
         help="seed number.") 

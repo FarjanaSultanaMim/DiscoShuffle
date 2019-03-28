@@ -145,6 +145,27 @@ def preprocess_essay_encoder(essay_list, args, di_list=None, boseos=False):
         ret += [e]
 
     return np.array(ret)
+
+def preprocess_essay_encoder_wPara(essay_list, args, di_list=None, boseos=False):
+    ret = []
+    
+    for e in essay_list:
+        e = re.sub(r'\t', '', e)
+        e = e.lower()
+        e = re.sub(r'\n\n', '\n', e)
+        e = re.sub(r'\n', ' MMM ', e)
+        if args.mp_punct:
+            e = ' '.join(word_tokenize(e))
+
+        if di_list != None:
+            e = find_replace_di(e, di_list)
+        
+        if boseos:
+            e = ["BOS {} EOS".format(x) for x in sent_tokenize(e)]
+            
+        ret += [e]
+
+    return np.array(ret)
     
     
 def preprocess_essay(essay_list, args, di_list=None, boseos=False):
@@ -156,14 +177,14 @@ def preprocess_essay(essay_list, args, di_list=None, boseos=False):
     for e in essay_list:
         e = re.sub(r'\t', '', e)
         e = e.lower()
-        
-        if di_list != None:
-            e = find_replace_di(e, di_list)
             
         e = re.sub(r'\n', ' MMM ', e)
         
         if args.mp_punct:
             e = ' '.join(word_tokenize(e))
+            
+        if di_list != None:
+            e = find_replace_di(e, di_list)
         
         e = re.split('MMM',e)[1:-1]
        
@@ -200,13 +221,65 @@ def shuffled_essay(essay_list):
 
     for i in essay_list:
         s = ["BOS {} EOS".format(x) for x in sent_tokenize(i)]
-        segmented_essay.append(" ".join(s))
+        segmented_essay+= [" ".join(s)]
 
         np.random.shuffle(s)
         nn = " ".join(s)
 
-        shuffle_essay.append(nn)
+        shuffle_essay+=[nn]
 
+    return segmented_essay, shuffle_essay
+
+def paragraph_shuffled_essay(essay_list):
+    
+    shuffle_essay = []
+    segmented_essay = []
+    
+    tokenizer = RegexpTokenizer(r'\w+')
+
+    for e in essay_list:
+        
+        emp = re.split('MMM',e)[1:-1]
+        
+        essay =[]
+
+        for i in emp:
+    
+            nn = (["BOS {} EOS ".format(x) for x in(sent_tokenize(i))])
+            essay.append(nn)
+        
+        all_essay = []
+        
+        for i in essay:
+            i.append('EOP')
+            for n, k in enumerate(i):
+                all_essay.append(k)
+
+        e = all_essay
+            
+        segmented_essay += [e]
+        
+        np.random.shuffle(emp)
+        
+        essay =[]
+
+        for i in emp:
+    
+            nn = (["BOS {} EOS ".format(x) for x in(sent_tokenize(i))])
+            essay.append(nn)
+        
+        all_essay = []
+        
+        for i in essay:
+            i.append('EOP')
+            for n, k in enumerate(i):
+                all_essay.append(k)
+
+        e = all_essay
+        
+        shuffle_essay += [e]
+        
+        
     return segmented_essay, shuffle_essay
 
 
@@ -229,7 +302,7 @@ def di_shuffled_essay(essay_list, di_list):
     return segmented_essay, shuffle_essay
 
 
-def find_replace_di_i(essay, di_list):
+def find_replace_di(essay, di_list):
     
     # Query will look like: "because|in order to"
     regex_di = "|".join([" ".join(di) for di in di_list])
@@ -244,7 +317,7 @@ def find_replace_di_i(essay, di_list):
 
     return essay
 
-def find_replace_di(essay, di_list):
+def find_replace_di_m(essay, di_list):
     for di in di_list:
         if len(di) == 9:
             w0 = di[0]
@@ -403,7 +476,16 @@ def create_training_data_for_shuffled_essays(refined_essay):
     # The original essays work as positive examples (label: 1), while the shuffled essays work as negative examples (label: 0)
     scores = [1] * len(refined_essay) + [0] * len(refined_essay)
     
-    return total_essay, scores
+    return np.array(total_essay), scores
+
+def create_training_data_for_paragraph_shuffled_essays(refined_essay):
+    essay_orig, essay_shf = paragraph_shuffled_essay(refined_essay)
+    total_essay = essay_orig + essay_shf
+    
+    # The original essays work as positive examples (label: 1), while the shuffled essays work as negative examples (label: 0)
+    scores = [1] * len(refined_essay) + [0] * len(refined_essay)
+    
+    return np.array(total_essay), scores
 
 
 def create_training_data_for_di_shuffled_essays(refined_essay, di_list):
@@ -413,7 +495,7 @@ def create_training_data_for_di_shuffled_essays(refined_essay, di_list):
     # The original essays work as positive examples (label: 1), while the shuffled essays work as negative examples (label: 0)
     scores = [1] * len(refined_essay) + [0] * len(refined_essay)
     
-    return total_essay, scores 
+    return np.array(total_essay), scores 
 
 def get_padded_essay(input_essay, max_seq_len):
         
