@@ -74,8 +74,15 @@ def main(args):
     sess = tf.Session(config=config)
     keras.backend.set_session(sess)
 
-    # Setup data  
-    essayids, essays, org_scores, scores, prompts, scaler = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_essay_Wprompt.xlsx', score_source="data/{}Scores.txt".format(paramargs.mp_score_type))
+    # Setup data 
+    if paramargs.mp_score_type == "ThesisClarity": 
+        essayids, essays, org_scores, scores, prompts, scaler = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_thesisClarity_Wprompt.xlsx', score_source="data/{}Scores.txt".format(paramargs.mp_score_type))
+        
+    else:
+        
+        essayids, essays, org_scores, scores, prompts, scaler = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_essay_Wprompt.xlsx', score_source="data/{}Scores.txt".format(paramargs.mp_score_type))
+        
+        
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
     if paramargs.mp_di_aware:

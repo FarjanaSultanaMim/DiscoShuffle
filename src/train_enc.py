@@ -16,6 +16,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
+from sklearn.model_selection import train_test_split
 
 import keras
 from keras.preprocessing.text import Tokenizer
@@ -84,10 +85,45 @@ def main(args):
     elif args.mp_2essay:
         
         essays = essay_icle + essay_t
+        
+        if args.mp_divide_data == "half":
+            
+            _, essays = train_test_split(essays, test_size = 0.50, random_state=42)
+            
+        elif args.mp_divide_data == "one_forth":
+            
+            _, essays = train_test_split(essays, test_size = 0.25, random_state=40)
+            
+        elif args.mp_divide_data == "one_eighth":
+            
+            _, essays = train_test_split(essays, test_size = 0.125, random_state=30)
+            
+        else:
+            
+            essays = essays
     
     else:
         
-         essays = essay_icle
+        essays = essay_icle
+        
+        if args.mp_divide_data == "half":
+            
+            _, essays = train_test_split(essays, test_size = 0.50, random_state=42)
+            
+        elif args.mp_divide_data == "one_forth":
+            
+            _, essays = train_test_split(essays, test_size = 0.25, random_state=35)
+            
+        elif args.mp_divide_data == "one_eighth":
+            
+            _, essays = train_test_split(essays, test_size = 0.125, random_state=30)
+            
+        else:
+            
+            essays = essays
+        
+            
+            
             
     if args.mp_wPara:
         
@@ -114,7 +150,7 @@ def main(args):
         main_essay, main_scores,
         test_size=0.2, shuffle=True, random_state=33)
     
-    print(main_essay[4545])
+    print(main_essay[0])
     print(main_essay[-1])
 
     # Create a tokenizer (indexer) from the training dataset.
@@ -230,8 +266,13 @@ if __name__ == "__main__":
         help="Whether to use paragraph boundary or not.")
     
     parser.add_argument(
+        '-dd','--divide-data', dest='mp_divide_data', type=str, 
+        help="Type of model (half, one_forth, one_eighth).")
+    
+    parser.add_argument(
         '-shuf','--shuffle-type', dest='mp_shuf', type=str, required=True,
         help="Shuffling type (sentence, di, para).")
     args = parser.parse_args()
+    
 
     main(args)

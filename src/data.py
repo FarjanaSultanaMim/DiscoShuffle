@@ -34,7 +34,7 @@ def load_pretrained_embeddings(dir_vectors = "/home/mim/"):
     return {w: embedding_matrix[word2idx[w]] for w in words}
 
 
-def load_discourse_indicators(fn_di = "/home/mim/DI_wo_and.txt"):
+def load_discourse_indicators(fn_di = "/home/mim/modified_DI_list.txt"):
     file = open(fn_di)
     data = file.read()
     data = data.splitlines()
@@ -97,6 +97,35 @@ def load_essay(fn_essays):
         
     return refined_essay
 
+def get_icle_enc_essays(all_essays, score_essays):
+    
+    df_all = pd.read_csv(all_essays)
+    
+    df_sc=pd.ExcelFile(score_essays)
+    df_sc= df_sc.parse('Sheet1')
+    
+    all_data = df_all['Essay Number'].tolist()
+    sc_data = df_sc['Essay Number'].tolist()
+    
+    enc_data =[i for i in all_data if i not in sc_data]
+    enc_data = np.array(enc_data)
+    
+    enc_df = df_all.loc[df_all['Essay Number'].isin(enc_data)]
+    
+    
+    essay_all = enc_df.essay
+    essay_all = essay_all.tolist()
+    
+    tokenizer = RegexpTokenizer(r'\w+|\n')
+
+    refined_essay = []
+
+    for e in essay_all:
+        if len(tokenizer.tokenize(e)) <= MAX_WORDS:
+            refined_essay.append(e)
+        
+    return refined_essay
+
 
 def get_fold(folds, i):
     pattern = [
@@ -130,8 +159,8 @@ def preprocess_essay_encoder(essay_list, args, di_list=None, boseos=False):
     ret = []
     
     for e in essay_list:
-        e = re.sub(r'\t', '', e)
-        e = re.sub(r'\n', '', e)
+        e = re.sub(r'\t', ' ', e)
+        e = re.sub(r'\n', ' ', e)
         e = e.lower()
         if args.mp_punct:
             e = ' '.join(word_tokenize(e))
@@ -150,7 +179,7 @@ def preprocess_essay_encoder_wPara(essay_list, args, di_list=None, boseos=False)
     ret = []
     
     for e in essay_list:
-        e = re.sub(r'\t', '', e)
+        e = re.sub(r'\t', ' ', e)
         e = e.lower()
         e = re.sub(r'\n\n', '\n', e)
         e = re.sub(r'\n', ' MMM ', e)

@@ -58,7 +58,14 @@ def main(args):
 
     # Setup data
     pre_embed = data.load_pretrained_embeddings() if args.mp_pretrained else None 
-    essayids, essays, _, scores, prompts, _ = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_essay_Wprompt.xlsx', score_source="data/{}Scores.txt".format(args.mp_score_type))
+    
+    if args.mp_score_type == "ThesisClarity" or args.mp_score_type == "PromptAdherence": 
+        essayids, essays, _, scores, prompts, _ = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_thesisClarity_Wprompt.xlsx', score_source="data/{}Scores.txt".format(args.mp_score_type))
+    
+    else:    
+        essayids, essays, _, scores, prompts, _ = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_essay_Wprompt.xlsx', score_source="data/{}Scores.txt".format(args.mp_score_type))
+    
+    
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
     if args.mp_di_aware:

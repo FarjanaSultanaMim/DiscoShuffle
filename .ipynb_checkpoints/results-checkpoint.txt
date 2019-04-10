@@ -446,6 +446,426 @@ dropout: 0.9 gcn: 7        output/c9b824d34fe90fba323fbd6645e88d95
 
 
 
+modified DI_shuffle
+
+1/ NEA+PN10 (Organization, not_fixed)
+
+output/6d68342b6b388060586e34d65ad3a265
+output/ff2e5651851ac0886715048f0f45d062
+output/fc8885d5fd82bd2e2dae7e565ad99764
+output/794dcc819162a96107188aa94e4d4e47
+output/19c009326bbefea1763e87020e22b53f
+output/e33bbf95ed84054acf3bbbd4027175c8
+output/ef531131b91f9f1f9973dc5a08605dde
+output/95fb6d0674ca0995b328f419100c7550
+output/81724fba0398797284dec83670a552dc
+output/1f5f883813eaa0fec63052098456ae57
+output/b8e67959a0ce5656f711db5ac8d6d25c
+output/c0664c027165eb677776c93258b23c0b
+
+2/ NEA+PN10 (Organization, fixed)
+
+output/96dce7a96b17ccb1f0d1757f042b9513
+output/cf3774cbac08419418e5be48038494f1
+output/845b8b0b487dd594132142dba8cfcf5d
+output/69ffeeebe767c8d493cff7f47a9cb9a1
+output/d80b09b049d39f741dddbf1421d2975e
+output/67aa835c922029d44e02ba3b2e8a43ec
+output/02fb961ae62c07b5237f18082d376b50
+output/28d0bf59900880c26103dad376f485b3
+output/d49e2098aa961370cb8d2a4e25ea3adb
+output/2cfe38fb0ebbd34355d3c22991562719
+output/e8458359dc1244b903c6004307a883c5
+output/6d3a5943cae33e0f31103223939cba3a
+
+3/ NEA+ Prompt (ArgumentStrength, not_fixed)
+
+output/8a59ab3a62d06e18425f0eb4062c115a
+output/3b487072b44246a34069d6d01287f9d7
+output/ced1b81aecbef7139fb4227c24c95409
+output/4a010919b1330291e33558376bd070db
+output/da039fa72be6414580ce1ecf660cf0fe
+output/3bd3fe512f3b53c0f6070603d59441e6
+output/53675ad4569fb52a0853e3c4cebec269
+output/aa3d5725cb272c40d2be24022882f060
+output/ed3e9ee4f8597d28b5e435d0bc224208
+output/760245ea92da004e2ac4fab53f17e7b6
+output/62f6b619a382ae8d827da5e828ae633d
+output/a372d83f9ae9655db46e781e700d0efd
+
+3/ NEA+ Prompt (ArgumentStrength, fixed)
+
+output/6e477b4ce36db94d45b62f477333f31f
+output/4ecf187d0557caee52cb9d5c53cf25b2
+output/cb11a7c6f8802b4c40f21af2491d9e79
+output/1c1e34caedd4c0b7dab78da26c4b047a
+output/c4c11f3371beec1ab9cdb3caf401e303
+output/01f0b274e2ea1f2eb7e0f9557b09c382
+output/b85e01f8e552c805b63a9e57f9fb83bc
+output/3fc334c14e2718136cfc76407c446cfa
+output/4c3cdffd6c346d84968e630e2206a55d
+output/076b814039a35e4be6e0e6a590ea1b3b
+output/d891ec7a30f32f80968f934bf86db865
+output/5acb4cdcb792690739d52385354f2009
+
+
+
+
+
+
+
+
+
+
+
+
+ThesisClarity
+
+1/ NEA
+
+
+dropout: 0.5 gcn: 0           output/11738707e55f07479ff6a518b4350b43
+dropout: 0.5 gcn: 3          output/b20eab5d324ebd14b0ea0cff0fb9cacd
+dropout: 0.5 gcn: 5          output/1e5d0478145a2a329710a63da527de16 
+dropout: 0.5 gcn: 7          output/345fda2ff25f09344c18786f706fe77b 
+dropout: 0.7 gcn: 0            output/4d9dda7b672d3d07fef17ef4363b69ee
+dropout: 0.7 gcn: 3           output/c792b1f351b975873fccfde1092dabc9
+dropout: 0.7 gcn: 5           output/7c4a6b1f9428bf373880bf2c1bae727d
+dropout: 0.7 gcn: 7           output/8d47be8671f1ec32a70947a224aad96b
+dropout: 0.9 gcn: 0           output/3c8cf8d5ba56e5af7a9342d7fc82d763
+dropout: 0.9 gcn: 3           output/60c1268037ed10f8324d60b94edc8072
+dropout: 0.9 gcn: 5         output/3139630ffd0f74f1820f0e65336bc436
+dropout: 0.9 gcn: 7        output/1e853a5bda88946e6db76c0e14d24b43
+
+
+
+2/ NEA+Prompt
+
+
+dropout: 0.5 gcn: 0       output/d9bc90f80d2ed62a7a15122dc7a9697c    
+dropout: 0.5 gcn: 3        output/4e5d4688e0bc09898566f498ec625ea8  
+dropout: 0.5 gcn: 5         output/b283fc5576d933e0406d354e783b26b3  
+dropout: 0.5 gcn: 7         output/9736e9c8a3c526c3dc79cb690fd79c87  
+dropout: 0.7 gcn: 0         output/fcf238e0616cfaf75f786594fd4f4053  
+dropout: 0.7 gcn: 3          output/a09ac97ec28fbc273085cb98e789bfb4 
+dropout: 0.7 gcn: 5          output/d258ccfb8282e981cb5014c73492ec10 
+dropout: 0.7 gcn: 7           output/c2fdc9b9451ffd344d85994405c85284
+dropout: 0.9 gcn: 0           output/defe43da231be954c59bd2dccb21b10e
+dropout: 0.9 gcn: 3           output/986cf6124d7fcc49540dfec7a12eba9d
+dropout: 0.9 gcn: 5         output/0cf38ef9c7d4af951bef900482a29fe6
+dropout: 0.9 gcn: 7         output/9393d6b7b0d647a82d95a77ec562b5b1
+
+3/ NEA (without punctuation)
+
+output/56da8ab4eb57b91f1435072b990e301b
+output/6622323a749da2ea25d32322a2b8027a
+output/6c8d333f3f8e8fc56d2ed6d3605eb854
+output/d43d415b8eac2c9d15c0b36de0645667
+output/b0549591c2beb6d3e1609eb748f1905e
+output/f2cc4c5e23401e4b6f3d132d8addc4f3
+output/30f3e4568214ef33a03249dba5e3a964
+output/d56f536bbdbba3326528e377f79c3d0a
+output/f21326c517aab9899ab892c59bf2b13d
+output/9762cf6fe1f90f74aadc8b2db471daba
+output/f23b05d6f1b55ff130244039dad6faf8
+output/eb6f93d0a4fadc628a19b72c3e7951d8
+
+4/ NEA+prompt (without punctuation)
+
+ output/b535f6eac62847325f88d0dc6c08bca5
+ output/96a0064fa62d5e42c914ea3fe531370f
+ output/1d02e11123e877ce4e9c87752aac5606
+ output/f78568c16d127e7a7e35560577be388a
+ output/845cdc7e327ca503b2baf0aed693e6ab
+ output/095d2dcda4a263f9bfa3d4e21a14fa5b
+ output/0fb409cf3b9661a35933ffff961b06e8
+ output/e4841a9e1a5cf9bc1f22d9a6bef5f808
+ output/9b1c356c5ae5a259eb718585b8ead8f4
+ output/9ee32834aee4a368fbdafd6076fc4b24
+ output/847f0fbc071fb71420205359f96b6b7b
+ output/81781e43cde2db43a4c15b85d1c131ac
+ 
+ 5/ NEA (Para shuffled, not fixed)
+ 
+ output/9f3a5b12fcbdb1d0272f999ce22118e2
+ output/17fe429d38f9ac6cb65a7992ac5e9331
+ output/7cd8058f21a3f18859ae0cd62d0c1424
+ output/69f83eb611f8672adb6e65e81474fa68
+ output/141858191bc0249935d71b3bd7eb5c11
+ output/b61a84eabde07da7fe16375de3f264d1
+ output/ff21debffcc56c3bb6f6c9f366ae8e90
+ output/d8ee73e703c8ad754be98ce28b8c7e70
+ output/f00a935a5a0ba331c989525e53c25b5c
+ output/0155059e98684c80d2a3da64acc44790
+ output/79f36a0b34ad617a93d16b24c2cd337e
+ output/15949e0622a9e10c8ca5a3d4ac67b259
+ 
+6/ NEA (Sentence shuffled, not fixed)
+
+output/cb55203b9c71b0ee079ffa7199dd5961
+output/08c6cd293c365cd2c818e5962c75cee2
+output/0bd7d6c3d2e5571dd68b4d708ea08199
+output/1b7cc86913224d8964ba4ddfb89b34cf
+output/d6aae658ba1ccc449aa5250bde870124
+output/469a6c0684a76d71eefe1bc671747c37
+output/608d1d57b58cfe703cee57effc7450f9
+output/0602a850c352e1b56c889b1734e409f9
+output/d437739543607be749d7a19ad59b6613
+output/deeac8df37d4524e3c29736735dbb69c
+output/1a957ee00c198f7a041103a9eeec68ad
+output/09d4018d536bb3ec787c95615ff7eb14
+
+7/ NEA (Sentence shuffled, fixed)
+
+output/8d5bc110dab14b6c735c5be6fb353225
+output/00d92a4eea1600658bc6e2ba1a64cfd3
+output/679b465a18b9f0ac76f44f060aa78404
+ output/be46dc2663a394602b7d452d40d6cff3
+ output/c6e2f5ea0ecbdca072acd55711ef5966
+  output/369f47aa997e9707bf2ad433c8ae65ad
+  output/9f693d38407bdb112aa657cda6da231d
+  output/bfcdc69426e1f6b6f55b11fc428a7333
+  output/5e5384494ed0de7d7cffe8a7976fd8a9
+  output/8b0dc4bd5447b011ffdde27e1602820f
+  output/6477d5789803072cad77acf237852085
+  output/23ffc0bb926b8d40ea212ccd5f786a76
+  
+8/ NEA (di shuffled, not fixed)
+
+output/9cd2d16069455ecff85d66eead198b74
+output/1ec52f2527ea3294afe5bd30c3d56f07
+output/78e57b27ddc7436743c94a702c8021cb
+output/6c79673226b45f9567798cf05e4fb7b8
+output/7a146f9b221f63d686445ccfaadf462d
+output/bd48673169274b57c1b9d28400bfedc0
+output/bd5f0f92f32bf30cc6d2d7b9eaa6504a
+output/91446fd5250729dccd0dde2c49f4a38b
+output/fe4ba1b29b5e2fd3552c72ce444af00d
+output/92dbccb50c87bf16dd4b369dcb2025a1
+output/228ec5506be9223b911916b59f7b4b8d
+output/20f81ebd91827389771bda93398dfab0
+
+
+
+
+
+
+Learning Curve:
+
+Organization:
+
+Half
+
+output/9ae03832f43b4dd7c9c2ab15bec75421
+output/66448d01d7a1119bf1d6088d09610626
+output/c71a8c5c859636b9efbe36683aadf48f
+output/da507fef4991e018518c9a59fa03142e
+output/0ee9a32ccf79b97c8fa0d4523b7f5e62
+output/c3b01c299a168117169a1393defebf29
+output/24896de35a65a4763f3a959412211755
+output/6ddd3b9c25ca73e48bea8238a3c7dff3
+output/9d6878430e09834bc10dc4d29bd25017
+output/22b919c3944d992ff995ac6637991650
+output/2ae43169d85f8b3e749f50fb5802fe1c
+output/a4431d2ac82dcde9e37aae82a5fecbb0
+
+one_forth
+
+output/6c25e48aeefef0a1c5ab175846a6ef57
+output/25248e2a18d9826bc83a504f1cf1536a
+output/1ee649a274e1ca38dfb7e3cb2856486f
+output/9e8f9025e4c94a457af6906e92488e9d
+output/a13d35b4c6110c51300a2ca31469accc
+output/ae6cab7040404ea6dd90984b1857e4f5
+output/4226853e35e36c89c7a7852bae8e7139
+output/e37a644cfc0ac4985e279a3d98dc945b
+output/0680c11c7e98b544ce0aa34d683fd08d
+output/cb70031a1eb368d690a5d593717671cc
+output/3cee47fa5ddd4858b0d197d61b28a879
+output/04e6348b5f0dd261b0c389fa2759ce15
+
+one_eight
+
+output/54650050bf9d106aa21ba3b1b53e1996
+output/2e08e4d81b65eb476246d493afd35aef
+output/24e18c4ab557900c441ae45b63bfe34a
+output/8ac63b3b9c8584a139748a24d1628b75
+output/a5addd93f02c0da5c12110bfe7d28cc2
+output/e7536f1ee6ca96ca323b0c6cbbbe83bc
+output/ed6317e6f17365f85439e11ba7fad24a
+output/a51044ce6627ecd7c53e6be1a8365346
+output/75e68a8cf4f263a1e22eded7be0d665d
+output/17512019cef1d0793237c69911b760dc
+output/0130b9e03555ea5caa9499cdbcdfa1d1
+output/b75f23642a3deb461101bd31c1727b7b
+
+ArgumentStrength
+
+Half
+
+output/9cbf7c4b41415113b4ca94816f6f332f
+output/4c9bd4e080a349699d7305790ed42012
+output/ed08f279d4a5ecf8a595b795fae30a8a
+output/4a0cea69602b9a34fd13fdbb326afffb
+output/decf295540c197c01ceb610fb3f78f00
+output/794f6c0511f06515603cd4404b2e690d
+output/d97dc57e13c3afa0a61bbca98a31221d
+output/b3250294c60b6df2a3bf040f81f4bb17
+output/9aa823034330fd73c22842af1680d383
+output/7e6be86644c9784aacceb48466255b94
+output/6fc35c176a7ae410b1104a0cc56ed656
+output/d28c9b67e366e445a5212fe365c69818
+
+
+one_forth
+
+output/aada79c3fffeda9c9e6e3d9f8887b5bd
+output/b8f415b87c42f467bab0fbcc4bf177c1
+output/88ae505f323c833f2182edde8e12e320
+output/c44d82bc8c6bb90b6f5183ab146f7217
+output/7f101c09d29ef41293992c86a7c7e735
+output/7298042a9176f5186bb207962f22919e
+output/92c4623bb080f81196383b672a5ec190
+output/ea104f97e6e16e3af3a4307288e83774
+output/615c44ec34184e08d133acc183644d5f
+output/868ca46ecaa874b115b12ebed82335c5
+output/45ba65540c7ef9e592e2bff7dcc27443
+output/fd9f53c7c4acefcfa44e93a6ee23acf0
+
+one_eight
+
+output/fdca6870e1b4a68d0fd30bccf7486772
+output/b10a361e4720c4350641e7148d258b07
+output/1b78959d15a9f2ae879e6d589f255264
+output/73a021042f8d4d92e49b7e143a640590
+output/c31461cb1147e5cbbf1923e5e00d4523
+output/584626ed313fd789d73d984dec0be3fd
+output/5c07db1184903fc6ef322de07d11e6ea
+output/6984cc667a2fca03f37ad79cbd4c0feb
+output/5f97c901927db7a3b5217d703d1e8873
+output/af33753aecfa191d39b5828d6d7f702b
+output/f13ce9ffec84aad9bf43e894cd20c36b
+output/b0a09c2373e384f61a35dd82b7b2e1a0
+
+
+
+Inoue-san: Learning Curve:
+
+Organization:
+
+Half
+
+output/d8fe071a923128f67d202972dbd761c7
+output/e09caaafa5dcbd50734c191b2d999adb
+output/6641be6df8c563b7656eb5981dfd7419
+output/3df2c2c85b6a6669fdbfc8dfbc47341f
+output/176c134dea962f592bbd891e3f23874c
+output/e087ab081f7be41eebbf4073530a7186
+output/7625f551d2fa01163759cf6595d5b1a2
+output/c94a55f42df3b9f63eb95fdb68f231db
+output/83799d39b4b4a5b38518c432af9d738a
+output/a1ffe164847a38ef5888888dcbe6c3d4
+output/83f756da2aa7f203b4c684c43fd5e390
+output/e4bcbc20ccfcd2405aabd8677cc5e3ca
+
+
+one_forth
+
+output/3dd7df4ba4f1a60a246be6d5e140ea94
+output/2f8317c2bdfcc8df5942d3ad0023a529
+output/8e8a639a039acc415812f9ac1af4069d
+output/d4892bc699b20ed41b2604d6abe8e19a
+output/5b6b68f8feb6df45fa9f16306daa0e5c
+output/e34f8749c1159480846e0418a5e1244d
+output/b48e549b3235bb83619a666e1dd362cc
+output/906a5c5e666764fc108f0923412e696f
+output/ecc44c9ec8edfe24465891f402c5e57e
+output/2dc97773fd2bbb0ebf917dfde658b0e3
+output/2fd280a1040922c6a98eae04d1e6375d
+output/f91a7e286a99ba4537d44c06cc0804c5
+
+
+one_eighth
+
+output/175e91d2351739bc022b4459f7df813f
+output/4ec463747d498e8ed32a82857d700c49
+output/576c52d778792efe73b4676c3d72bc72
+output/e0717a86d9e56522ce101ad58ed46f89
+output/2716386404e6b406ee37c9f4f180659b
+output/3ba28f5750afd8f5b9513e60f1541b66
+output/2312c3f01836037487a946c2d3b62e7c
+output/49ffad1a8f3bcd677d9656e4dc0c3f6d
+output/3edf58cbe544845be43d608d0120c420
+output/9a05828a498694bc415fff8a6466f278
+output/e54235c192885c8e3973ed9f30dbe5fc
+output/77cd59200130f06e7707f7c369f7a3fe
+
+
+Argument Strength
+
+Half
+
+output/beda4d4c9bfb81e2c25c55d7de7c54aa
+output/5c9e057c71ac275283feb16b5abe612a
+output/7c2234587354a0d26ffa6d58f9476c38
+output/fa3c96afe5e70faa804c13a7ab0d9a9f
+output/6f9537a9bbb389370711b509a1da7f4c
+output/6d2804420945c4d973c587cc209864c6
+output/d825a636bfea709699c0d0cc11dfd8c3
+output/35aa37c25db3ddf0b4718b6b43b68209
+output/83f21e5bf0c672cc0b79dea35891b4e4
+output/14cd6228cff217d7f245fc0870a3ee8f
+output/8f28d8c13816876fb8f42586862eaeca
+output/02480054c9ee7eb1f445cd93e6c93fa6
+
+one_forth
+
+output/a478e3c97e70d85648683396b3d367a7
+output/4cf4636001cfd72a87a95647bf1c0ca6
+output/f8cc1abf43dbd9813e10b50c3900bdb6
+output/b9fcf61f6e991697a99f9dc4df5a203f
+output/3634bb8f9b9545ee23e926e919d056ed
+output/eda29e86a66c026209d2003350956900
+output/2786f6683093961d375b20c0e65c9d54
+output/5311280df071bc045f29571baff0cd9d
+output/f180f1e3d852b7fd7fe5034b8a93c961
+output/cd7920496a0d3487484bca1e2c99f614
+output/aeaad654b2b675087f8f57ac64cd5359
+output/0ce8fe03d69753d67ef836520d9618c6
+
+one_eighth
+
+output/f03eb97648150570bf1d94ceb23c26e7
+output/73f15be602c24fbaf20123d4f0deaf97
+output/efbad9fa3f68589d8834e27299515160
+output/8bde6a7faaa2283c0f161912d38d7821
+output/a6ebfc5236d9a5a82b8f6f2a9ba95d30
+output/c6502c00db90892e8e5ba1f20714bb1c
+output/de5af40be4843a302805956778d63b20
+output/4130c7529734c1b5e569dab1b8657795
+output/60f58f58601494fc4d75367f0891c17d
+output/45af8fbd1d24f4e3b3ecc8b5488ccc64
+output/3248f231d19ef2cdf04aae50a31f4c2b
+output/5767ca0dd6bd67285ab1b953c3ccf735
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
