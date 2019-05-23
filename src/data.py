@@ -517,6 +517,36 @@ def create_training_data_for_paragraph_shuffled_essays(refined_essay):
     return np.array(total_essay), scores
 
 
+
+def create_training_data_for_paragraph_shuffled_essays_second(refined_essay_1, args):
+    
+    if args.mp_divide_data == "half":
+        
+        with open("paraShuffled_icle.txt", "rb") as fp1:
+            essay_icle_shf = pickle.load(fp1)
+        with open("original_icle.txt", "rb") as fpp1:
+            essay_icle = pickle.load(fpp1)
+        essay_shf = essay_icle_shf[:2273]
+        essay_orig = essay_icle[:2273]
+        
+    else:   
+        
+        with open("paraShuffled_icle.txt", "rb") as fp1:
+            essay_icle_shf = pickle.load(fp1)
+        with open("original_icle.txt", "rb") as fpp1:
+            essay_icle = pickle.load(fpp1)
+        essay_shf = essay_icle_shf
+        essay_orig = essay_icle
+        
+        
+    total_essay = essay_orig + essay_shf
+    
+    # The original essays work as positive examples (label: 1), while the shuffled essays work as negative examples (label: 0)
+    scores = [1] * len(essay_orig) + [0] * len(essay_orig)
+    
+    return np.array(total_essay), scores
+
+
 def create_training_data_for_di_shuffled_essays(refined_essay, di_list):
     essay_orig, essay_shf = di_shuffled_essay(refined_essay, di_list)
     total_essay = essay_orig + essay_shf

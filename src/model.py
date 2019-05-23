@@ -4,11 +4,12 @@
 import numpy as np
 
 import keras
-from keras.layers import Embedding, LSTM, Conv1D, Input, SpatialDropout1D, Masking, Dense, Average, TimeDistributed, Activation, Softmax, Multiply
+from keras.layers import Embedding, LSTM, Conv1D, Input, SpatialDropout1D, Masking, Dense, Average, TimeDistributed, Activation, CuDNNLSTM, Softmax, Multiply
 from keras.layers import Lambda, Bidirectional, concatenate, Concatenate, Add, GRU, GlobalMaxPooling1D, GlobalAveragePooling1D
 from keras.models import Model, Sequential
 from keras import backend as K
 from keras import initializers
+from keras.layers import CuDNNLSTM
 import tensorflow as tf
 import tensorflow_hub as hub
 

@@ -153,6 +153,7 @@ def main(args):
     print(main_essay[0])
     print(main_essay[-1])
 
+
     # Create a tokenizer (indexer) from the training dataset.
     
     if args.mp_preenc != None:
@@ -168,9 +169,7 @@ def main(args):
     sequences_train_main = tokenizer_m.texts_to_sequences(main_essay_t)
     sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
     lens = [len(e) for e in sequences_train_main]
-    
-    print(len(essays))
-
+   
     X_train_main = pad_sequences(sequences_train_main, maxlen=min(max(lens), data.MAX_WORDS))
     X_val_main = pad_sequences(sequences_valid_main, maxlen=X_train_main.shape[1])
 

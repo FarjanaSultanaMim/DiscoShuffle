@@ -21,6 +21,9 @@ from keras.preprocessing.sequence import pad_sequences
 from keras import initializers
 from keras.callbacks import ModelCheckpoint
 
+from numpy.random import seed
+from tensorflow import set_random_seed
+
 import hashlib
 
 import tensorflow as tf
@@ -94,6 +97,23 @@ def main(args):
     assert(0 <= args.fold and args.fold <= 4)
     
     tr, v, ts = data.get_fold(folds, args.fold)
+    
+    if args.mp_divide_data == "half":
+            
+            _, tr = train_test_split(tr, test_size = 0.50, random_state= args.mp_seed)
+            
+    elif args.mp_divide_data == "one_forth":
+            
+            _, tr = train_test_split(tr, test_size = 0.25, random_state= args.mp_seed)
+            
+    elif args.mp_divide_data == "one_eighth":
+            
+            _, tr = train_test_split(tr, test_size = 0.125, random_state= args.mp_seed)
+            
+    else:
+        tr= tr
+        v=v
+        
 
     indices = np.arange(len(essays))
     main_essay_t, main_essay_v, score_t, score_v, indices_t, indices_v, prompt_t, prompt_v = essays[tr], essays[v], scores[tr], scores[v], indices[tr], indices[v], prompts[tr], prompts[v]
@@ -348,6 +368,10 @@ if __name__ == "__main__":
     parser.add_argument(
         '-pseq-conv-encdim','--pseq-conv-encoder-dim', dest='mp_pseq_conv_encdim', type=int,
         help="Dimension of PersingNg10 CONV sequence encoder.")
+    
+    parser.add_argument(
+        '-dd','--divide-data', dest='mp_divide_data', type=str, 
+        help="Type of model (half, one_forth, one_eighth).")
     
     args = parser.parse_args()
     main(args)
