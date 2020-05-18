@@ -71,7 +71,7 @@ def main(args):
         df_asap = data.load_essay_xlsx('PATH_to_ASAPessays(.xlsx)')
         essay_asap = data.get_essay_array_pretrain(df_asap)
 
-        df_icnale = data.load_essay_xlsx('PATH_to_ICNALEessays(.xlsx)') 
+        df_icnale = data.load_essay_xlsx('PATH_to_ICNALEessays(.xlsx)') # ./data/ICNALE_essays.xlsx
         essay_icnale = data.get_essay_array_pretrain(df_icnale)
         essay_icnale = [re.sub('\ufeff', '', e) for e in essay_icnale]
 
