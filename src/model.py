@@ -27,9 +27,6 @@ MAX_VOCAB_WORDS_enc = 90000
 MAX_PROMPT_WORDS = 1000
 batch_size = 32
 
-elmo_model = hub.Module("https://tfhub.dev/google/elmo/2", trainable=True)
-
-
 def param_str(args):
     keys = [k for k in args.__dict__ if k.startswith("mp_")]
     return "\n".join(["{}={}".format(k[3:], args.__dict__[k]) for k in sorted(keys)])

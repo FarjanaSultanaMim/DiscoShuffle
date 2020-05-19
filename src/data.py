@@ -6,6 +6,7 @@ import random
 
 import pandas as pd
 import numpy as np
+import codecs
 
 from nltk import word_tokenize
 from nltk import sent_tokenize
@@ -20,7 +21,7 @@ MAX_PARAGRAPHS = 52
 
 
 
-def load_folds(fn = "data/OrganizationFolds.txt", id2idx = {}):
+def load_folds(fn = "./essayScore_folds/OrganizationFolds.txt", id2idx = {}):
     
     return [[id2idx.get(x, x) for x in v.strip().split('\n')] for f, v in re.findall("^Fold ([1-5]):\n([A-Z0-9\n]+)$", open(fn).read(), flags=re.DOTALL|re.MULTILINE)]
 
@@ -48,6 +49,15 @@ def load_essay_xlsx(path):
     df = df.parse('Sheet1')
     return df
 
+def load_essay_csv(path):
+    df = pd.read_csv(path)
+    return df
+
+def load_essay_tsv(path):
+    with codecs.open(path, "r", "Shift-JIS", "ignore") as file:
+        df = pd.read_table(file, delimiter="\t")
+    return df
+
 def get_essay_array_pretrain(dataframe, icle=False):
     essays = np.array(dataframe.essay)
 
@@ -58,7 +68,7 @@ def get_essay_array_pretrain(dataframe, icle=False):
     return np.array(essays)
 
 
-def load_annotated_essay_with_normalized_score(fn_essays, score_source = "./data/OrganizationScores.txt"):
+def load_annotated_essay_with_normalized_score(fn_essays, score_source = "./essayScore_folds/OrganizationScores.txt"):
     """
     Getting normalized score and making a dataframe
     """
@@ -145,16 +155,16 @@ def preprocess_essay_withParaBoundary(essay_list, args, di_list=None, boseos=Fal
         e = re.sub(r'\n', ' MMM ', e)
         if di_list != None:
             e = find_replace_di_m(e, di_list)
-        e = re.split('MMM', e)
-        
         if args.mp_punct:
             e = ' '.join(word_tokenize(e))
+        
+        e = re.split('MMM', e)
         
         
         essay_para = []
         for para in e:
             if boseos:
-                nn = (["BOS {} EOS ".format(x) for x in(sent_tokenize(i))])
+                nn = (["BOS {} EOS ".format(x) for x in(sent_tokenize(para))])
                 nn = ' '.join(nn)
             else:
                 nn = para

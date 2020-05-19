@@ -1,19 +1,10 @@
 import sys
 import os
 
-comm_train = ["""
+comm_train = [
 
-# 1: NEA (Baseline)
-python src/train.py \
-    --fold {} \
-    --score-type {} \
-    --model-type nea --dropout 0.7 \
-    --embedding-dim 50 --aggregation-grudim 200 \
-    --gradientclipnorm 0 --meanovertime \
-    --pre-trained --fix-embedding --punctuation --para 
-""",
 """
-# 2: NEA+PN10 (Baseline)
+# 1: Base+PFE
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -25,7 +16,7 @@ python src/train.py \
 """,
               
  """
-# 3: NEA+Prompt (Baseline)
+# 2: Base+PE
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -39,7 +30,7 @@ python src/train.py \
                           
               
 """
-# 4: NEA+PN10+pretrained(sentence-shuffled, fine-tuned)
+# 3: Base+PFE+pretrained(sentence-shuffled, fine-tuned)
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -47,10 +38,10 @@ python src/train.py \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 0 --meanovertime --punctuation \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 200 \
-    --pretrained-encoder 
+    --pretrained-encoder PATH_TO_PRETRAINED_ENCODER
 """,
               """
-# 5: NEA+PN10+pretrained(sentence-shuffled, fixed-encoder)
+# 4: Base+PFE+pretrained(sentence-shuffled, fixed-encoder)
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -59,21 +50,21 @@ python src/train.py \
     --gradientclipnorm 0 --meanovertime --punctuation \
     --fix-encoder --fix-embedding \
     --persing-seq --pseq-embedding-dim 16 --pseq-encoder-dim 200 \
-    --pretrained-encoder 
+    --pretrained-encoder PATH_TO_PRETRAINED_ENCODER
 """,
               
               """
-# 6: NEA+Prompt+pretrained(sentence-shuffle, fine-tuned)
+# 5: Base+PE+pretrained(sentence-shuffle, fine-tuned)
 python src/train.py \
     --fold {} \
     --score-type {} \
     --model-type nea_aft_pretrain --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 0 --meanovertime --punctuation --prompt \
-    --pretrained-encoder 
+    --pretrained-encoder PATH_TO_PRETRAINED_ENCODER
 """,
 """
-# 7: NEA+Prompt+pretrained(sentence-shuffle, fixed-encoder)
+# 6: Base+PE+pretrained(sentence-shuffle, fixed-encoder)
 python src/train.py \
     --fold {} \
     --score-type {} \
@@ -81,7 +72,7 @@ python src/train.py \
     --embedding-dim 50 --aggregation-grudim 200 \
     --fix-encoder --fix-embedding \
     --gradientclipnorm 0 --meanovertime --punctuation --prompt \
-    --pretrained-encoder 
+    --pretrained-encoder PATH_TO_PRETRAINED_ENCODER
 """,
               
                             
@@ -100,7 +91,7 @@ python src/train_enc.py \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 5 --meanovertime --pre-trained \
-    --shuffle-type sentence --punctuation --all-essay
+    --shuffle-type sentence --punctuation --essay-selection  AllEssay
 """,    
 """
 # 2: Pretraining with sentence-based shuffling
@@ -108,8 +99,8 @@ python src/train_enc.py \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 5 --meanovertime \
-    --shuffle-type sentence --punctuation \
-    --pretrained-encoder output_enc/
+    --shuffle-type sentence --punctuation --essay-selection icle\
+    --pretrained-encoder PATH_TO_OUTPUT_ENCODER
 """,
     
     
@@ -120,7 +111,7 @@ python src/train_enc.py \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 5 --meanovertime --pre-trained \
-    --shuffle-type di --punctuation --all-essay 
+    --shuffle-type di --punctuation --essay-selection  AllEssay
 """,
 """
 # 4: Pretraining with DI-based shuffling
@@ -128,8 +119,8 @@ python src/train_enc.py \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 5 --meanovertime \
-    --shuffle-type di --punctuation \
-    --pretrained-encoder 
+    --shuffle-type di --punctuation --essay-selection icle\
+    --pretrained-encoder PATH_TO_OUTPUT_ENCODER
 """, 
     
  
@@ -139,7 +130,7 @@ python src/train_enc.py \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 5 --meanovertime --pre-trained \
-    --shuffle-type para --punctuation --w-para  --2essay-para --test
+    --shuffle-type para --punctuation --w-para  --essay-selection ICLEandTOEFL11
 """,
 """
 # 6: Pretraining with paragraph-based shuffling
@@ -147,9 +138,11 @@ python src/train_enc.py \
     --model-type nea --dropout 0.7 \
     --embedding-dim 50 --aggregation-grudim 200 \
     --gradientclipnorm 5 --meanovertime  \
-    --shuffle-type para --punctuation --w-para \
-    --pretrained-encoder 
+    --shuffle-type para --punctuation --w-para --essay-selection icle\
+    --pretrained-encoder PATH_TO_OUTPUT_ENCODER
 """,
+
+]
     
     
     

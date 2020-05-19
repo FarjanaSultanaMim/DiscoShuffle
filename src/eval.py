@@ -1,4 +1,3 @@
-
 import argparse, logging
 
 import pickle
@@ -74,39 +73,33 @@ def main(args):
     sess = tf.Session(config=config)
     keras.backend.set_session(sess)
 
-    # Setup data 
-    if paramargs.mp_score_type == "ThesisClarity": 
-        essayids, essays, org_scores, scores, prompts, scaler = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_thesisClarity_Wprompt.xlsx', score_source="data/{}Scores.txt".format(paramargs.mp_score_type))
+    # Load Pretrained Embedding
+    pre_embed = data.load_pretrained_embeddings() if args.mp_pretrained else None 
+
+    # Load data and Normalize score
+    essayids, essays, org_scores, scores, prompts, scaler = data.load_annotated_essay_with_normalized_score('Path_to_essay_file(.xlsx)', score_source="./essayScore_folds/{}Scores.txt".format(paramargs.mp_score_type))  # ./data/ICLE_essays.xlsx
         
-    else:
-        
-        essayids, essays, org_scores, scores, prompts, scaler = data.load_annotated_essay_with_normalized_score('/home/mim/ICLE_essay_Wprompt.xlsx', score_source="data/{}Scores.txt".format(paramargs.mp_score_type))
-        
-        
+    # Get Persing Sequence (Paragraph Sequence of Persing et. al. 2010)
     pseqs = np.array([data.get_persing_sequence(e, p) for e, p in zip(essays, prompts)])
     
+    # Preprocess data (assert sentence and paragraph boundary)
     if paramargs.mp_di_aware:
         di_list = data.load_discourse_indicators()
-        essays = data.preprocess_essay(essays, di_list, boseos=True)
-    
+        essays = data.preprocess_essay_withParaBoundary(essays, paramargs, boseos=True, bopeop=True)
     elif paramargs.mp_model_type == "nea_aft_pretrain" and not paramargs.mp_para:
-        
-        essays = data.preprocess_essay_encoder(essays, paramargs, boseos=True)
-        
+        essays = data.preprocess_essay_noParaBoundary(essays, paramargs, boseos=True)
     elif paramargs.mp_no_para:
-        
-        essays = data.preprocess_essay_encoder(essays, paramargs, boseos=True)
-    
+        essays = data.preprocess_essay_noParaBoundary(essays, paramargs, boseos=True)
     else:
-        essays = data.preprocess_essay(essays, paramargs, boseos=True)
+        essays = data.preprocess_essay_withParaBoundary(essays, paramargs, boseos=True, bopeop=True)
         
+    
     if paramargs.mp_prompt:
-        
-        prompts = data.preprocess_essay_encoder(prompts, paramargs, boseos=True)
+        prompts = data.preprocess_essay_noParaBoundary(essays, paramargs, boseos=True)
     
     # Get training and validation set!
     id2idx = dict([(v, k) for k, v in enumerate(essayids)])
-    folds = data.load_folds("data/{}Folds.txt".format(paramargs.mp_score_type), id2idx=id2idx)
+    folds = data.load_folds("./essayScore_folds/{}Folds.txt".format(paramargs.mp_score_type), id2idx=id2idx)
     
     assert(0 <= args.fold and args.fold <= 4)
     
@@ -126,12 +119,10 @@ def main(args):
     if paramargs.mp_model_type != "only_pseq":
         
         tokenizer_m = pickle.load(open(os.path.join(args.model_dir, "tokenizer_f{}.pickle".format(args.fold)), "rb"))
-
         sequences_valid_main = tokenizer_m.texts_to_sequences(main_essay_v)
         lens = [len(e) for e in sequences_valid_main]
 
         model_inputs_v += [pad_sequences(sequences_valid_main, maxlen=min(max(lens), data.MAX_WORDS))]
-
         sequence_length_main = model_inputs_v[-1].shape[1]
     
     # Persing sequence to sequence
@@ -144,19 +135,16 @@ def main(args):
         lens = [len(e) for e in sequences_valid_pseq]
 
         model_inputs_v += [pad_sequences(sequences_valid_pseq, maxlen=min(max(lens), data.MAX_PARAGRAPHS))]
-
         sequence_length_pseq = model_inputs_v[-1].shape[1]
         
-      #prompt
+    #prompt
     if paramargs.mp_prompt:
         
         tokenizer_p = pickle.load(open(os.path.join(args.model_dir, "tokenizer_p_f{}.pickle".format(args.fold)), "rb"))
-        
         sequences_valid_prompt = tokenizer_p.texts_to_sequences(prompt_v)
         lens = [len(e) for e in sequences_valid_prompt]
 
         model_inputs_v += [pad_sequences(sequences_valid_prompt, maxlen=min(max(lens), data.MAX_WORDS))]
-
         sequence_length_prompt = model_inputs_v[-1].shape[1]
 
     
@@ -164,10 +152,7 @@ def main(args):
         
         mainModel = model.pseq_regression(sequence_length_pseq,
                                         paramargs,)
-        mainModel.summary()    
-    
     else:
-        
         if paramargs.mp_prompt:
             
             mainModel = model.create_regression_wprompt(None,
@@ -178,18 +163,15 @@ def main(args):
                                         sequence_length_prompt,
                                         paramargs,
                                         )
-            mainModel.summary()
-        
         else:
-            
             mainModel = model.create_regression(None,
                                         tokenizer_m.word_index,
                                         sequence_length_main,
                                         sequence_length_pseq,
                                         paramargs,
                                         )
-            mainModel.summary()
     
+    mainModel.summary()    
     mainModel.load_weights(os.path.join(args.model_dir, "regression_f{}.hdf5".format(args.fold)), by_name=True)
 
     print("Starting evaluation.")

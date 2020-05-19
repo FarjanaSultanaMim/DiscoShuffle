@@ -85,7 +85,7 @@ def main(args):
     
     # Get training and validation set!
     id2idx = dict([(v, k) for k, v in enumerate(essayids)])
-    folds = data.load_folds("data/{}Folds.txt".format(args.mp_score_type), id2idx=id2idx)
+    folds = data.load_folds("./essayScore_folds/{}Folds.txt".format(args.mp_score_type), id2idx=id2idx)
     
     assert(0 <= args.fold and args.fold <= 4)
     
